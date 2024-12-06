@@ -1,0 +1,40 @@
+[package]
+name = "savings"
+version = "0.1.0"
+description = "Control your savings"
+authors = ["Gonf"]
+edition = "2021"
+
+include = ["src/storage/migrations/*"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+# The `_lib` suffix may seem redundant but it is necessary
+# to make the lib name unique and wouldn't conflict with the bin name.
+# This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
+name = "savings_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-shell = "2"
+tauri-plugin-window-state = "2.0.0"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+sqlx = { version = "0.8.2", features = ["sqlite", "runtime-tokio", "chrono"] }
+thiserror = "2.0.3"
+yahoo_finance_api = "2.4.0"
+async-trait = "0.1.83"
+log = "0.4.22"
+chrono = { version = "0.4", features = ["serde"] }
+
+[target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
+tauri-plugin-window-state = "2"
+
+[target."cfg(target_os = \"macos\")".dependencies]
+cocoa = "0.26.0"
