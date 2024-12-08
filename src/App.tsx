@@ -1,6 +1,6 @@
-import { Router } from "@solidjs/router";
-import { Sidebar } from "./components/Sidebar.tsx";
-import { Routes } from "./Routes.tsx";
+import { Router } from '@solidjs/router';
+import { Routes } from './Routes.tsx';
+import { Sidebar } from './components/sidebar.tsx';
 
 export default function App() {
   return (

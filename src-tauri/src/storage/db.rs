@@ -1,4 +1,3 @@
-use serde::de;
 use sqlx::{migrate::MigrateDatabase, sqlite::SqlitePoolOptions, Error, Sqlite};
 use std::path::PathBuf;
 
@@ -30,7 +29,16 @@ impl Database {
         let migrations_path = std::path::Path::new("src/storage/migrations");
 
         let migrator = sqlx::migrate::Migrator::new(migrations_path).await.unwrap();
-        migrator.run(&self.pool).await.unwrap();
-        Ok(())
+        let result = migrator.run(&self.pool).await;
+        match result {
+            Ok(_) => {
+                println!("Migrations ran successfully");
+                Ok(())
+            }
+            Err(e) => {
+                println!("Error running migrations: {:?}", e);
+                std::process::exit(1);
+            }
+        }
     }
 }

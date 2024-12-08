@@ -4,11 +4,14 @@ use tauri::Manager;
 use tokio::task::block_in_place;
 
 mod commands;
-use commands::exchange_rates::get_exchange_rates;
+use commands::exchange_rates::{
+    add_exchange_rate, delete_exchange_rate, get_exchange_rates, update_exchange_rate,
+};
+mod helpers;
+mod models;
 mod services;
 mod state;
 mod storage;
-pub mod models;
 
 use crate::state::AppState;
 use thiserror::Error;
@@ -34,7 +37,12 @@ pub async fn run() {
             });
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![get_exchange_rates])
+        .invoke_handler(tauri::generate_handler![
+            get_exchange_rates,
+            add_exchange_rate,
+            update_exchange_rate,
+            delete_exchange_rate
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

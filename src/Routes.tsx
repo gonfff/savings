@@ -1,4 +1,4 @@
-import { Component, lazy } from "solid-js";
+import { Component, lazy } from 'solid-js';
 
 export interface menuRoute {
   name: string;
@@ -8,23 +8,23 @@ export interface menuRoute {
 
 export const Routes: menuRoute[] = [
   {
-    name: "Dashboard",
-    path: "/",
-    component: lazy(() => import("./pages/Dashboard")),
+    name: 'Dashboard',
+    path: '/',
+    component: lazy(() => import('./pages/dashboard.tsx')),
   },
   {
-    name: "Accounts",
-    path: "/accounts",
-    component: lazy(() => import("./pages/Accounts")),
+    name: 'Accounts',
+    path: '/accounts',
+    component: lazy(() => import('./pages/accounts.tsx')),
   },
   {
-    name: "Exchange Rates",
-    path: "/exchange-rates",
-    component: lazy(() => import("./pages/ExchangeRates")),
+    name: 'Exchange Rates',
+    path: '/exchange-rates',
+    component: lazy(() => import('./pages/exchange-rates.tsx')),
   },
   {
-    name: "Settings",
-    path: "/settings",
-    component: lazy(() => import("./pages/Settings")),
+    name: 'Settings',
+    path: '/settings',
+    component: lazy(() => import('./pages/settings.tsx')),
   },
 ];

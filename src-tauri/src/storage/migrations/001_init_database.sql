@@ -33,8 +33,8 @@ CREATE TABLE
     exchange_rate
 (
     id     INTEGER PRIMARY KEY NOT NULL,
-    source TEXT                NOT NULL,
-    target TEXT                NOT NULL,
+    source INTEGER             NOT NULL,
+    target INTEGER             NOT NULL,
     rate   REAL                NOT NULL,
     dt     DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (source) REFERENCES instrument (id),
