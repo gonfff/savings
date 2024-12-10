@@ -1,3 +1,5 @@
+use std::fs;
+
 use log::debug;
 use tauri;
 use tauri::Manager;
@@ -49,5 +51,8 @@ pub async fn run() {
 
 async fn setup_savings_app(app: &mut tauri::App) -> AppState {
     let app_data_dir = app.path().app_data_dir().unwrap();
+    // Ensure the directory exists
+    fs::create_dir_all(app_data_dir.clone()).unwrap();
+
     AppState::new(app_data_dir).await.unwrap()
 }

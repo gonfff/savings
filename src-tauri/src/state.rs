@@ -1,8 +1,9 @@
 use log::debug;
+use sqlx::sqlite::SqlitePool;
 use tokio::sync::RwLock;
 
+use crate::models::kv::SettingKey;
 use crate::storage::db::Database;
-use crate::models::kv::Key;
 use crate::storage::repositories::kv::KVRepository;
 use crate::AppError;
 use std::path::PathBuf;
@@ -23,32 +24,31 @@ impl AppState {
             .await
             .map_err(|e| AppError::StateError(format!("Error while connect to DB: {}", e)))?;
 
+        let pool = &db.pool.clone();
         let state = Self {
             db,
             app_dir,
-            base_currency: "USD".to_string().into(),
-            use_external_api: AtomicBool::new(false),
+            base_currency: Self::get_base_currency(pool).await?,
+            use_external_api: Self::get_use_external_api(pool).await?,
         };
-
-        debug!("App dir: {:?}", state.app_dir); // pass dead code
-        state.get_settings().await?;
 
         Ok(state)
     }
 
-    async fn get_settings(&self) -> Result<(), AppError> {
-        // Set base currency to state from DB or default value
-        let base_currency = KVRepository::get(&self.db.pool, Key::BaseCurrency.as_str())
+    /// Set base currency to state from DB or default value
+    async fn get_base_currency(db: &SqlitePool) -> Result<RwLock<String>, AppError> {
+        let base_currency = KVRepository::get(db, SettingKey::BaseCurrency.as_str())
             .await
             .map_or_else(|_| "USD".to_string(), |v| v);
-        *self.base_currency.write().await = base_currency;
+        Ok(RwLock::new(base_currency))
+    }
 
-        // Set use external API to state from DB or default value
-        let use_external_api = KVRepository::get(&self.db.pool, Key::UseExternalApi.as_str())
+    /// Set use external API to state from DB or default value
+    async fn get_use_external_api(db: &SqlitePool) -> Result<AtomicBool, AppError> {
+        let use_external_api = KVRepository::get(db, SettingKey::UseExternalApi.as_str())
             .await
             .map_or_else(|_| false, |v| v.parse().unwrap_or(false));
-        self.use_external_api
-            .store(use_external_api, Ordering::Relaxed);
-        Ok(())
+        let atomic_bool = AtomicBool::new(use_external_api);
+        Ok(atomic_bool)
     }
 }

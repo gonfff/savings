@@ -1,13 +1,13 @@
-pub enum Key {
+pub enum SettingKey {
     BaseCurrency,
     UseExternalApi,
 }
 
-impl Key {
+impl SettingKey {
     pub fn as_str(&self) -> &str {
         match self {
-            Key::BaseCurrency => "base_currency",
-            Key::UseExternalApi => "use_external_api",
+            SettingKey::BaseCurrency => "base_currency",
+            SettingKey::UseExternalApi => "use_external_api",
         }
     }
 }
