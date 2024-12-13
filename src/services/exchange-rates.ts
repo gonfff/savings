@@ -13,6 +13,12 @@ export interface ExchangeRateResponse {
   next: boolean;
 }
 
+export interface ExchangeRateRequest {
+  source: string;
+  target: string;
+  rate: number;
+}
+
 export const fetchExchangeRates = async (
   limit: number = 10,
   offset: number = 0,
@@ -26,4 +32,12 @@ export const fetchExchangeRates = async (
     dt: new Date(item.dt),
   }));
   return resp;
+};
+
+export const saveExchangeRate = async (
+  data: ExchangeRateRequest,
+): Promise<null> => {
+  const resp = await invoke('get_exchange_rates', { data });
+  console.log('saveExchangeRate', resp);
+  return null;
 };

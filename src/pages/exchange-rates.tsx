@@ -1,5 +1,7 @@
 import { createEffect, createSignal, For, onCleanup, onMount } from 'solid-js';
-import { ModalWindowButton, TableRowButton } from '../components/buttons.tsx';
+import { TableRowButton } from '../components/buttons.tsx';
+import { FormInput } from '../components/form.tsx';
+import { ModalWindow } from '../components/modal-wondow.tsx';
 import {
   ExchangeRate,
   fetchExchangeRates,
@@ -21,10 +23,49 @@ const ExchangeRatesHeader = () => {
     <div class="h-20 flex flex-col">
       <div class="flex flex-row flex-1 items-center">
         <h1 class="flex-1 text-2xl font-bold text-left">Exchange Rates</h1>
-        <ModalWindowButton buttonTitle="Add rate" />
+        <AddRateForm />
       </div>
       <div class="divider"></div>
     </div>
+  );
+};
+
+const AddRateForm = () => {
+  const handleSave = (formData: Record<string, string>) => {
+    console.log('Form Data:', formData);
+  };
+
+  return (
+    <ModalWindow
+      title="Add Exchange Rate"
+      text="Dont forget to add assets first"
+      triggerButton={<button class="btn btn-primary">Add Rate</button>}
+      actionButtonCallback={handleSave}
+    >
+      {(setFormData) => (
+        <>
+          <FormInput
+            name="source"
+            placeholder="AAPL"
+            type="text"
+            setFormData={setFormData}
+          />
+          <FormInput
+            name="target"
+            placeholder="USD"
+            type="text"
+            setFormData={setFormData}
+          />
+          <FormInput
+            name="rate"
+            placeholder="3.123"
+            type="number"
+            setFormData={setFormData}
+          />
+          <FormInput name="date" type="date" setFormData={setFormData} />
+        </>
+      )}
+    </ModalWindow>
   );
 };
 
@@ -72,7 +113,6 @@ const ExchangeRatesTable = () => {
     const data = await fetchExchangeRates(limit(), offset());
     setRates(data.items);
     setNextPage(data.next);
-    console.log(rates());
   });
 
   return (
@@ -101,7 +141,6 @@ const ExchangeRatesTable = () => {
 const ExchangeRatesRow = ({ rate }: { rate: ExchangeRate }) => {
   return (
     <tr>
-      {/* <th>{rate.id}</th> */}
       <td>{rate.dt.toLocaleDateString()}</td>
       <td>{rate.source}</td>
       <td>{rate.target}</td>
