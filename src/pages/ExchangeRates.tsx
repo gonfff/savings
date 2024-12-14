@@ -1,12 +1,11 @@
 import { createEffect, createSignal, For, onCleanup, onMount } from 'solid-js';
 import { TableRowButton } from '../components/buttons.tsx';
 import { FormInput } from '../components/FormInput.tsx';
-import { ModalWindow } from '../components/modal-wondow.tsx';
+import useForm from '../hooks/UseForm.ts';
 import {
   ExchangeRate,
   fetchExchangeRates,
 } from '../services/exchange-rates.ts';
-import useForm from '../hooks/UseForm.ts';
 
 const ExchangeRatesPage = () => {
   return (
@@ -81,6 +80,23 @@ const AddRateForm = () => {
       placeholder: 'AAPL',
       type: 'text',
       value: 'QWERT',
+    },
+    {
+      name: 'target',
+      placeholder: 'USD',
+      type: 'text',
+      value: 'RUB',
+    },
+    {
+      name: 'rate',
+      placeholder: '3.123',
+      type: 'float',
+      value: '1',
+    },
+    {
+      name: 'date',
+      type: 'date',
+      value: '2024-12-20',
     },
   ];
 
