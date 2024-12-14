@@ -1,7 +1,7 @@
 import { createEffect, createSignal, For, onCleanup, onMount } from 'solid-js';
-import { TableRowButton } from '../components/buttons.tsx';
-import { FormInput } from '../components/form.tsx';
-import { ModalWindow } from '../components/modal-wondow.tsx';
+import { TableRowButton } from '../components/Buttons.tsx';
+import { FormInput } from '../components/Form.tsx';
+import { ModalWindow } from '../components/ModalWindow.tsx';
 import {
   ExchangeRate,
   fetchExchangeRates,

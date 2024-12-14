@@ -1,6 +1,6 @@
 import { Router } from '@solidjs/router';
 import { Routes } from './Routes.tsx';
-import { Sidebar } from './components/sidebar.tsx';
+import { Sidebar } from './components/Sidebar.tsx';
 
 export default function App() {
   return (
@@ -12,9 +12,4 @@ export default function App() {
       <Router>{Routes}</Router>
     </div>
   );
-}
-
-{
-  /* <div class='bg-red-400'></div>
-<div class='bg-blue-400'></div> */
 }
