@@ -1,3 +1,4 @@
+import { For } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { DropdownInput, DropdownInputProps, FormInput } from './Inputs';
 
@@ -54,28 +55,30 @@ export const ModalWindow = (props: ModalWindowProps) => {
               <ModalComment text={props.comment || ''} />
               {
                 <div class="form-control">
-                  {props.formInputs.map((item) =>
-                    // render form inputs here to prevent re-rendering of the whole form
-                    item.inputType === 'FormInput' ? (
-                      <FormInput
-                        name={item.name}
-                        type={item.type}
-                        placeholder={item.placeholder}
-                        value={item.value}
-                        required={item.required}
-                      />
-                    ) : item.inputType === 'DropdownInput' ? (
-                      <DropdownInput
-                        name={item.name}
-                        type={item.type}
-                        placeholder={item.placeholder}
-                        value={item.value}
-                        required={item.required}
-                        fetchFunction={item.fetchFunction}
-                        setCustomInputData={setCustomInputData}
-                      />
-                    ) : null,
-                  )}
+                  {/* render form inputs here to prevent saving input data */}
+                  <For each={props.formInputs ?? []} fallback={<></>}>
+                    {(item) =>
+                      item.inputType === 'FormInput' ? (
+                        <FormInput
+                          name={item.name}
+                          type={item.type}
+                          placeholder={item.placeholder}
+                          value={item.value}
+                          required={item.required}
+                        />
+                      ) : item.inputType === 'DropdownInput' ? (
+                        <DropdownInput
+                          name={item.name}
+                          type={item.type}
+                          placeholder={item.placeholder}
+                          value={item.value}
+                          required={item.required}
+                          fetchFunction={item.fetchFunction}
+                          setCustomInputData={setCustomInputData}
+                        />
+                      ) : null
+                    }
+                  </For>
                 </div>
               }
               <div class="modal-action">

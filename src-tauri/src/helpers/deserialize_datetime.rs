@@ -1,5 +1,4 @@
-use chrono::NaiveDate;
-use chrono::Utc;
+use chrono::{NaiveDate, Utc};
 
 pub fn default_date_deserializer<'de, D>(deserializer: D) -> Result<NaiveDate, D::Error>
 where

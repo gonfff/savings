@@ -1,4 +1,4 @@
-import { createEffect, createSignal } from 'solid-js';
+import { createEffect, createSignal, For } from 'solid-js';
 
 export interface FormInputProps {
   name: string;
@@ -42,7 +42,9 @@ export const DropdownInput = (props: DropdownInputProps) => {
   const [showDropdown, setShowDropdown] = createSignal<boolean>(false);
 
   const fetchResults = async (query: string) => {
-    const data = (await props.fetchFunction(query)) as queryItem[];
+    const data = props.fetchFunction
+      ? ((await props.fetchFunction(query)) as queryItem[])
+      : [];
     if (data.length === 0) {
       data.push({ id: 0, name: 'No results found', description: 'add assets' });
     }
@@ -72,29 +74,36 @@ export const DropdownInput = (props: DropdownInputProps) => {
                shadow-sm focus:outline-none focus:border-primary focus:ring-primary focus:ring-1"
         onInput={(e) => {
           setQuery({ id: 0, name: e.currentTarget.value });
-          props.setCustomInputData(props.name, '');
+          props.setCustomInputData && props.setCustomInputData(props.name, '');
         }}
         onFocus={() => setShowDropdown(fetchedItems().length > 0)}
         required={props.required}
+        tabIndex={0}
+        onBlur={() => setShowDropdown(false)}
       />
       {showDropdown() && (
         <ul class="absolute z-10 bg-base-100 border menu w-full mt-1 shadow-lg cursor-pointer overflow-x-hidden overflow-y-auto">
-          {fetchedItems().map((item) => (
-            <li>
-              <a
-                class="menu-item p-1 rounded-none"
-                onClick={() => {
-                  setQuery({ id: item.id, name: item.name });
-                  props.setCustomInputData(props.name, item.id.toString());
-                  setShowDropdown(false);
-                }}
-              >
-                {item.description
-                  ? item.name + ', ' + item.description
-                  : item.name}
-              </a>
-            </li>
-          ))}
+          <For each={fetchedItems() ?? []} fallback={<></>}>
+            {(item) => (
+              <li>
+                <a
+                  class="menu-item p-1 rounded-none"
+                  disabled={item.id === 0} // disable 'No results found' item
+                  onMouseDown={(e) => e.preventDefault()} // Prevent blur
+                  onClick={() => {
+                    setQuery({ id: item.id, name: item.name });
+                    props.setCustomInputData &&
+                      props.setCustomInputData(props.name, item.id.toString());
+                    setShowDropdown(false);
+                  }}
+                >
+                  {item.description
+                    ? item.name + ', ' + item.description
+                    : item.name}
+                </a>
+              </li>
+            )}
+          </For>
         </ul>
       )}
     </label>

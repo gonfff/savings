@@ -21,10 +21,9 @@ export const fetchSearchAssets = async (
     query: query,
   })) as Asset[];
 
-  const res = resp.map((item) => ({
+  return resp.map((item) => ({
     id: item.id,
     name: item.code,
     description: item.name,
   }));
-  return res;
 };
