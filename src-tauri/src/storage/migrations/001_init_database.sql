@@ -9,7 +9,7 @@ CREATE TABLE
 
 -- Table for assets (currencies, cryptocurrencies, stocks, etc.)
 CREATE TABLE
-    instrument
+    asset
 (
     id         INTEGER PRIMARY KEY NOT NULL,
     code       TEXT UNIQUE         NOT NULL,
@@ -32,18 +32,19 @@ CREATE TABLE
 CREATE TABLE
     exchange_rate
 (
-    id     INTEGER PRIMARY KEY NOT NULL,
-    source INTEGER             NOT NULL,
-    target INTEGER             NOT NULL,
-    rate   REAL                NOT NULL,
-    dt     DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (source) REFERENCES instrument (id),
-    FOREIGN KEY (target) REFERENCES instrument (id)
+    id            INTEGER PRIMARY KEY NOT NULL,
+    asset_from_id INTEGER             NOT NULL,
+    asset_to_id   INTEGER             NOT NULL,
+    rate          REAL                NOT NULL,
+    source        TEXT                NOT NULL,
+    to_date       DATE                NOT NULL DEFAULT CURRENT_DATE,
+    FOREIGN KEY (asset_from_id) REFERENCES asset (id),
+    FOREIGN KEY (asset_to_id) REFERENCES asset (id)
 );
 
-CREATE INDEX idx_exchange_rate_source_target ON exchange_rate (source, target);
+CREATE INDEX idx_exchange_rate_asset_from_id_asset_to_id ON exchange_rate (asset_from_id, asset_to_id);
 
-CREATE INDEX idx_exchange_dt ON exchange_rate (dt);
+CREATE INDEX idx_exchange_rate_to_date ON exchange_rate (to_date);
 
 -- Table for accounts
 CREATE TABLE
@@ -56,7 +57,7 @@ CREATE TABLE
     description TEXT,
     created_at  DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (location_id) REFERENCES location (id),
-    FOREIGN KEY (asset_id) REFERENCES instrument (id)
+    FOREIGN KEY (asset_id) REFERENCES asset (id)
 );
 
 -- Table for cache to store the state of an account for each date

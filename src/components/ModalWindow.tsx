@@ -1,68 +1,101 @@
-import { createSignal, JSX } from 'solid-js';
+import { createStore } from 'solid-js/store';
+import { DropdownInput, DropdownInputProps, FormInput } from './Inputs';
 
-type ModalWindowProps = {
-  formData: Record<string, string>; // Form data
-  setFormData: (key: string, value: string) => void; // Form data event handler
+export interface formInputType extends DropdownInputProps {
+  inputType: string;
+}
+interface ModalWindowProps {
+  formInputs: formInputType[];
+  isOpen: () => boolean; // Modal window open state
+  setIsOpen: (state: boolean) => void; // Modal window open state event handler
   title: string; // Modal window title
-  text: string; // Modal window description
-  triggerButton: JSX.Element; // Open modal window button
-  actionButtonCallback: (formData: Record<string, string>) => void; // Callback function for action button
-  children: (setFormData: (key: string, value: string) => void) => JSX.Element; // Modal window content
-};
+  comment?: string; // Modal window description
+  buttonAction: (formData: Record<string, string>) => Promise<null>; // Callback function for action button
+}
 
 type ModalTextProps = {
   text: string;
 };
 
 export const ModalWindow = (props: ModalWindowProps) => {
-  const [isOpen, setIsOpen] = createSignal(true);
-  let formData: Record<string, string> = {};
-  console.log('initial formData', formData);
-  const setFormData = (key: string, value: string) => {
-    formData[key] = value;
-  };
+  const [customInputData, setCustomInputData] = createStore<
+    Record<string, string>
+  >({});
 
   return (
-    <div>
-      <div onClick={() => setIsOpen(true)}>{props.triggerButton}</div>
-
-      {isOpen() && (
+    <>
+      {props.isOpen() && (
         <div
           class="modal modal-open"
           onClick={(e) => {
-            if (e.target === e.currentTarget) setIsOpen(false);
+            if (e.target === e.currentTarget) props.setIsOpen(false);
           }}
         >
-          <div class="modal-box">
-            <ModalTitle text={props.title} />
-            <ModalText text={props.text} />
-            {props.children(setFormData)}
-            <div class="modal-action">
-              <button
-                class="btn btn-primary"
-                onClick={() => {
-                  props.actionButtonCallback(formData);
-                  setIsOpen(false);
-                  formData = {};
-                  console.log('formData after action', formData);
-                }}
-              >
-                Save
-              </button>
-              <button
-                class="btn"
-                onClick={() => {
-                  setIsOpen(false);
-                  formData = {};
-                }}
-              >
-                Close
-              </button>
-            </div>
+          <div class="modal-box h-max">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                // get value of all form inputs
+                const formData = new FormData(e.currentTarget);
+                const data: Record<string, string> = {};
+                formData.forEach((value, key) => {
+                  data[key] = value.toString();
+                });
+                // set custom input data e.g. id from dropdown
+                Object.entries(customInputData).map(
+                  ([key, value]) => (data[key] = value as string),
+                );
+
+                props.buttonAction(data);
+                props.setIsOpen(false);
+              }}
+            >
+              <ModalTitle text={props.title} />
+              <ModalComment text={props.comment || ''} />
+              {
+                <div class="form-control">
+                  {props.formInputs.map((item) =>
+                    // render form inputs here to prevent re-rendering of the whole form
+                    item.inputType === 'FormInput' ? (
+                      <FormInput
+                        name={item.name}
+                        type={item.type}
+                        placeholder={item.placeholder}
+                        value={item.value}
+                        required={item.required}
+                      />
+                    ) : item.inputType === 'DropdownInput' ? (
+                      <DropdownInput
+                        name={item.name}
+                        type={item.type}
+                        placeholder={item.placeholder}
+                        value={item.value}
+                        required={item.required}
+                        fetchFunction={item.fetchFunction}
+                        setCustomInputData={setCustomInputData}
+                      />
+                    ) : null,
+                  )}
+                </div>
+              }
+              <div class="modal-action">
+                <button class="form-submit btn btn-primary" type="submit">
+                  Save
+                </button>
+                <button
+                  class="btn"
+                  onClick={() => {
+                    props.setIsOpen(false);
+                  }}
+                >
+                  Close
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 
@@ -70,6 +103,6 @@ export const ModalTitle = (props: ModalTextProps) => {
   return <h3 class="font-bold text-lg">{props.text}</h3>;
 };
 
-export const ModalText = (props: ModalTextProps) => {
+export const ModalComment = (props: ModalTextProps) => {
   return <p class="text-sm opacity-50">{props.text}</p>;
 };

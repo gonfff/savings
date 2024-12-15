@@ -1,7 +1,7 @@
-import { createSignal } from "solid-js";
-import { menuRoute } from "../Routes";
+import { createSignal } from 'solid-js';
+import { menuRoute } from '../Routes';
 
-const [selectedMenu, setSelectedMenu] = createSignal("Dashboard");
+const [selectedMenu, setSelectedMenu] = createSignal('Dashboard');
 
 const handleMenuClick = (menu: string) => {
   setSelectedMenu(menu);
@@ -11,7 +11,6 @@ export const Sidebar = ({ routes }: { routes: menuRoute[] }) => {
   return (
     <div class="h-screen grid grid-cols-[11rem_1fr]">
       <div class="menu flex">
-        {/* bg-base-200 */}
         <SidebarTitle />
         <Menu routes={routes} />
         <SidebarSupport />
@@ -27,7 +26,7 @@ const Menu = ({ routes }: { routes: menuRoute[] }) => {
       {routes.map((menu) => (
         <li>
           <a
-            class={`menu-item rounded-none  ${selectedMenu() === menu.name ? "active" : ""}`}
+            class={`menu-item rounded-none  ${selectedMenu() === menu.name ? 'active' : ''}`}
             onClick={() => handleMenuClick(menu.name)}
             href={menu.path}
           >

@@ -1,5 +1,4 @@
-use crate::models::exchange_rates::ExchangeRateIn;
-use crate::models::ExchangeRateOut;
+use crate::models::exchange_rates::{ExchangeRateIn, ExchangeRateOut, ExchangeRatesInsert};
 use crate::services::ServiceError;
 use crate::state::AppState;
 use crate::storage::repositories::exchange_rates::ExchangeRatesRepository;
@@ -24,7 +23,8 @@ impl<'a> ExchangeRatesService<'a> {
     }
 
     pub async fn add_exchange_rate(&self, rate: ExchangeRateIn) -> Result<(), ServiceError> {
-        ExchangeRatesRepository::add(&self.app_state.db.pool, rate).await?;
+        let new_rate: ExchangeRatesInsert = rate.into();
+        ExchangeRatesRepository::add(&self.app_state.db.pool, new_rate).await?;
         Ok(())
     }
 

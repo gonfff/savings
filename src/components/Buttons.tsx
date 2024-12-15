@@ -1,12 +1,10 @@
-import { createSignal } from 'solid-js';
-
 export const TableRowButton = () => {
   return (
     <div class="dropdown dropdown-end">
       <div
         tabindex="0"
         role="button"
-        class="btn btn-square btn-outline border-0 btn-xs"
+        class="btn btn-square btn-outline border-0 btn-xs rounded-none"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -15,12 +13,9 @@ export const TableRowButton = () => {
           viewBox="0 0 24 24"
           stroke="currentColor"
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="3"
-            d="M6 18L18 6M6 6l12 12"
-          />
+          <path d="M5 6.5H19V8H5V6.5Z" fill="#1F2328" />
+          <path d="M5 16.5H19V18H5V16.5Z" fill="#1F2328" />
+          <path d="M5 11.5H19V13H5V11.5Z" fill="#1F2328" />
         </svg>
       </div>
       <ul
@@ -28,12 +23,26 @@ export const TableRowButton = () => {
         class="dropdown-content menu bg-base-100 z-[1] w-32 p-2 shadow"
       >
         <li>
-          <a>Edit</a>
+          <a class="rounded-none">Edit</a>
         </li>
         <li>
-          <a>Delete</a>
+          <a class="rounded-none">Delete</a>
         </li>
       </ul>
     </div>
+  );
+};
+
+export const AddRateButton = ({
+  title,
+  setIsOpen,
+}: {
+  title: string;
+  setIsOpen: (isOpen: boolean) => void;
+}) => {
+  return (
+    <button class="btn btn-primary" onClick={() => setIsOpen(true)}>
+      {title}
+    </button>
   );
 };
