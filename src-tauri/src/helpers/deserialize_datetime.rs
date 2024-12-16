@@ -1,16 +1,15 @@
-use chrono::{DateTime, Utc};
-use serde::{de, Deserialize, Deserializer};
+use chrono::{NaiveDate, Utc};
 
-pub fn null_to_utc_dt<'de, D>(deserializer: D) -> Result<Option<DateTime<Utc>>, D::Error>
+pub fn default_date_deserializer<'de, D>(deserializer: D) -> Result<NaiveDate, D::Error>
 where
-    D: Deserializer<'de>,
+    D: serde::Deserializer<'de>,
 {
-    let option: Option<String> = Option::deserialize(deserializer)?;
-
-    match option {
-        Some(s) => DateTime::parse_from_str(&s, "%+")
-            .map(|dt| Some(dt.with_timezone(&Utc)))
-            .map_err(de::Error::custom),
-        None => Ok(Some(Utc::now())),
+    let s: Option<&str> = serde::Deserialize::deserialize(deserializer)?;
+    match s {
+        Some(date_str) => NaiveDate::parse_from_str(date_str, "%d-%m-%Y")
+            .or_else(|_| NaiveDate::parse_from_str(date_str, "%Y-%m-%dT%H:%M:%SZ"))
+            .or_else(|_| NaiveDate::parse_from_str(date_str, "%Y-%m-%dT%H:%M:%S%.3fZ"))
+            .map_err(serde::de::Error::custom),
+        None => Ok(Utc::now().naive_utc().date()),
     }
 }

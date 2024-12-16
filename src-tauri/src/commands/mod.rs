@@ -1,5 +1,6 @@
 pub mod settings;
 pub mod exchange_rates;
+pub mod assets;
 
 use thiserror::Error;
 

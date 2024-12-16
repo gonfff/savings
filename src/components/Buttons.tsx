@@ -1,12 +1,10 @@
-import { createSignal, JSX } from 'solid-js';
-
 export const TableRowButton = () => {
   return (
     <div class="dropdown dropdown-end">
       <div
         tabindex="0"
         role="button"
-        class="btn btn-square btn-outline border-0 btn-xs"
+        class="btn btn-square btn-outline border-0 btn-xs rounded-none"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -25,75 +23,26 @@ export const TableRowButton = () => {
         class="dropdown-content menu bg-base-100 z-[1] w-32 p-2 shadow"
       >
         <li>
-          <a>Edit</a>
+          <a class="rounded-none">Edit</a>
         </li>
         <li>
-          <a>Delete</a>
+          <a class="rounded-none">Delete</a>
         </li>
       </ul>
     </div>
   );
 };
 
-export interface ModalWindowButtonProps {
-  isOpen: () => boolean;
-  setIsOpen: (value: boolean) => void;
-  buttonTitle: string;
-  modaltitle: string;
-  form: (
-    formData: Record<string, unknown>,
-    setFormData: (newData: Record<string, unknown>) => void,
-  ) => JSX.Element;
-  actionButtonTitle: string | undefined;
-  actionButtonHandler: (formData: Record<string, unknown>) => Promise<void>;
-}
-
-export const ModalWindowButton = (props: ModalWindowButtonProps) => {
-  const [isOpen, setIsOpen] = createSignal(false);
-  const [formData, setFormData] = createSignal<Record<string, unknown>>({});
-
-  const handleSubmit = async () => {
-    try {
-      await props.actionButtonHandler(formData());
-      setIsOpen(false);
-    } catch (error) {
-      console.error('Error submitting form:', error);
-    }
-  };
-
+export const AddRateButton = ({
+  title,
+  setIsOpen,
+}: {
+  title: string;
+  setIsOpen: (isOpen: boolean) => void;
+}) => {
   return (
-    <div>
-      <button class="btn btn-primary" onClick={() => setIsOpen(true)}>
-        {props.buttonTitle}
-      </button>
-
-      {isOpen() && (
-        <div
-          class="modal modal-open"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setIsOpen(false);
-          }}
-        >
-          <div class="modal-box">
-            <h3 class="font-bold text-lg">{props.modaltitle}</h3>
-            {props.form(formData(), setFormData)}
-            <div class="modal-action">
-              {props.actionButtonTitle ? (
-                <button
-                  type="submit"
-                  class="btn btn-primary"
-                  onClick={handleSubmit}
-                >
-                  {props.actionButtonTitle}
-                </button>
-              ) : null}
-              <button class="btn" onClick={() => setIsOpen(false)}>
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+    <button class="btn btn-primary" onClick={() => setIsOpen(true)}>
+      {title}
+    </button>
   );
 };

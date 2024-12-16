@@ -10,21 +10,21 @@ export const Routes: menuRoute[] = [
   {
     name: 'Dashboard',
     path: '/',
-    component: lazy(() => import('./pages/dashboard.tsx')),
+    component: lazy(() => import('./pages/Dashboard.tsx')),
   },
   {
     name: 'Accounts',
     path: '/accounts',
-    component: lazy(() => import('./pages/accounts.tsx')),
+    component: lazy(() => import('./pages/Accounts.tsx')),
   },
   {
     name: 'Exchange Rates',
     path: '/exchange-rates',
-    component: lazy(() => import('./pages/exchange-rates.tsx')),
+    component: lazy(() => import('./pages/ExchangeRates.tsx')),
   },
   {
     name: 'Settings',
     path: '/settings',
-    component: lazy(() => import('./pages/settings.tsx')),
+    component: lazy(() => import('./pages/Settings.tsx')),
   },
 ];

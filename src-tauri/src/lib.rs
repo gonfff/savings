@@ -6,6 +6,7 @@ use tauri::Manager;
 use tokio::task::block_in_place;
 
 mod commands;
+use commands::assets::{get_assets, search_assets};
 use commands::exchange_rates::{
     add_exchange_rate, delete_exchange_rate, get_exchange_rates, update_exchange_rate,
 };
@@ -43,7 +44,9 @@ pub async fn run() {
             get_exchange_rates,
             add_exchange_rate,
             update_exchange_rate,
-            delete_exchange_rate
+            delete_exchange_rate,
+            get_assets,
+            search_assets,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

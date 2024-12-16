@@ -1,2 +1,2 @@
 pub mod deserialize_datetime;
-pub use deserialize_datetime::null_to_utc_dt;
+pub use deserialize_datetime::default_date_deserializer;

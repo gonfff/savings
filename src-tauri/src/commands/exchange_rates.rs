@@ -1,6 +1,6 @@
 use crate::commands::CommandsError;
-use crate::models::exchange_rates::ExchangeRateIn;
-use crate::models::{ExchangeRateOut, PaginatedResponse};
+use crate::models::exchange_rates::{ExchangeRateIn, ExchangeRateOut};
+use crate::models::PaginatedResponse;
 use crate::services::exchannge_rates::ExchangeRatesService;
 use crate::state::AppState;
 use tauri::command;

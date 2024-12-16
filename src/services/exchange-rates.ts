@@ -1,29 +1,39 @@
 import { invoke } from '@tauri-apps/api/core';
+import { PaginatedResponse } from './base.types';
 
 export interface ExchangeRate {
   id: number;
-  source: string;
-  target: string;
+  from_id: number;
+  from_code: string;
+  to_id: number;
+  to_code: string;
   rate: number;
-  dt: Date;
+  source: string;
+  to_date: Date;
 }
 
-export interface ExchangeRateResponse {
-  items: ExchangeRate[];
-  next: boolean;
-}
+export interface ExchangeRateRequest
+  extends Omit<ExchangeRate, 'id' | 'from_code' | 'to_code' | 'source'> {}
 
 export const fetchExchangeRates = async (
   limit: number = 10,
   offset: number = 0,
-): Promise<ExchangeRateResponse> => {
+): Promise<PaginatedResponse<ExchangeRate>> => {
   const resp = (await invoke('get_exchange_rates', {
     limit: limit,
     offset: offset,
-  })) as ExchangeRateResponse;
+  })) as PaginatedResponse<ExchangeRate>;
   resp.items = resp.items.map((item) => ({
     ...item,
-    dt: new Date(item.dt),
+    to_date: new Date(item.to_date),
   }));
   return resp;
+};
+
+export const addExchangeRate = async (
+  rate: ExchangeRateRequest,
+): Promise<null> => {
+  console.log(rate);
+  await invoke<null>('add_exchange_rate', { rate });
+  return null;
 };
