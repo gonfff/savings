@@ -33,7 +33,6 @@ export const fetchExchangeRates = async (
 export const addExchangeRate = async (
   rate: ExchangeRateRequest,
 ): Promise<null> => {
-  console.log(rate);
   await invoke<null>('add_exchange_rate', { rate });
   return null;
 };

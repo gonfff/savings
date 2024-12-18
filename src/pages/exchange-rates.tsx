@@ -1,7 +1,11 @@
-import { createSignal, For } from 'solid-js';
-import { AddRateButton, TableRowButton } from '../components/Buttons.tsx';
-import { formInputType, ModalWindow } from '../components/ModalWindow.tsx';
-import { PaginatedContainer } from '../components/Pagination.tsx';
+import { createEffect, createSignal, For } from 'solid-js';
+import { AddRateButton, TableRowButton } from '../components/buttons.tsx';
+import {
+  getReloadContext,
+  ReloadProvider,
+} from '../components/contexts/reload.tsx';
+import { formInputType, ModalWindow } from '../components/modal-window.tsx';
+import { PaginatedContainer } from '../components/pagination.tsx';
 import { fetchSearchAssets } from '../services/assets.ts';
 import {
   addExchangeRate,
@@ -13,8 +17,10 @@ import {
 const ExchangeRatesPage = () => {
   return (
     <div class="flex flex-col mr-3 mt-3 h-screen">
-      <ExchangeRatesHeader />
-      <ExchangeRatesTable />
+      <ReloadProvider>
+        <ExchangeRatesHeader />
+        <ExchangeRatesTable />
+      </ReloadProvider>
     </div>
   );
 };
@@ -34,7 +40,10 @@ const ExchangeRatesHeader = () => {
 };
 
 const AddRate = () => {
-  const [isOpen, setIsOpen] = createSignal(false); //todo
+  const [isOpen, setIsOpen] = createSignal(false);
+
+  // Get setter for reload signal from context
+  const { setReload } = getReloadContext();
 
   const items: formInputType[] = [
     {
@@ -76,14 +85,15 @@ const AddRate = () => {
         formInputs={items}
         title="Add Exchange Rate"
         comment="Dont forget to add assets first"
-        buttonAction={(formData) => {
+        buttonAction={async (formData) => {
           const exchangeRateRequest: ExchangeRateRequest = {
             from_id: parseInt(formData.from),
             to_id: parseInt(formData.to),
             rate: parseFloat(formData.rate),
             to_date: new Date(formData.date),
           };
-          return addExchangeRate(exchangeRateRequest);
+          await addExchangeRate(exchangeRateRequest);
+          setReload(true);
         }}
       />
     </>
@@ -93,8 +103,24 @@ const AddRate = () => {
 const ExchangeRatesTable = () => {
   const [rates, setRates] = createSignal<ExchangeRate[] | null>(null);
 
+  const limit = 20;
+  const [offset, setOffset] = createSignal<number>(0);
+
+  // event and effect for reloading the page after adding a new rate
+  const { reload, setReload } = getReloadContext();
+  createEffect(() => {
+    if (reload()) {
+      setRates(null);
+      setOffset(0);
+      setReload(false);
+    }
+  });
+
   return (
     <PaginatedContainer
+      limit={limit}
+      offset={offset}
+      setOffset={setOffset}
       items={rates}
       setItems={setRates}
       fetchFunction={fetchExchangeRates}
