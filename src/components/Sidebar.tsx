@@ -1,5 +1,10 @@
-import { createSignal } from 'solid-js';
-import { menuRoute } from '../Routes';
+import { Component, createSignal } from 'solid-js';
+
+export interface menuRoute {
+  name: string;
+  path: string;
+  component: Component;
+}
 
 const [selectedMenu, setSelectedMenu] = createSignal('Dashboard');
 

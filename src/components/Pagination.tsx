@@ -8,6 +8,9 @@ import {
 import { PaginatedResponse } from '../services/base.types';
 
 interface PaginatedContainerProps {
+  limit: number;
+  offset: () => number;
+  setOffset: (offset: number) => void;
   items: () => any[] | null;
   setItems: (items: any[] | null) => void;
   fetchFunction: (
@@ -23,14 +26,12 @@ export const PaginatedContainer = (
   let container: HTMLDivElement | undefined;
 
   const [nextPage, setNextPage] = createSignal<boolean>(false);
-  const [limit] = createSignal<number>(20);
-  const [offset, setOffset] = createSignal<number>(0);
 
   // fetch next data and put it in the items signal
   const fetchNextData = async () => {
     if (nextPage()) {
-      setOffset(offset() + limit());
-      const data = await props.fetchFunction(limit(), offset());
+      props.setOffset(props.offset() + props.limit);
+      const data = await props.fetchFunction(props.limit, props.offset());
       props.setItems([...(props.items() || []), ...data.items]);
     }
   };
@@ -55,11 +56,22 @@ export const PaginatedContainer = (
     }
   });
 
-  // fetch data on mount
-  onMount(async () => {
-    const data = await props.fetchFunction(limit(), offset());
+  const initialFetch = async () => {
+    const data = await props.fetchFunction(props.limit, props.offset());
     props.setItems(data.items);
     setNextPage(data.next);
+  };
+
+  // fetch data on mount
+  onMount(async () => {
+    await initialFetch();
+  });
+
+  // fetch data on offset reload
+  createEffect(() => {
+    if (props.offset() === 0 && props.items() === null) {
+      initialFetch();
+    }
   });
 
   // render children with container reference for scroll event

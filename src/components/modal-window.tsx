@@ -1,6 +1,6 @@
 import { For } from 'solid-js';
 import { createStore } from 'solid-js/store';
-import { DropdownInput, DropdownInputProps, FormInput } from './Inputs';
+import { DropdownInput, DropdownInputProps, FormInput } from './inputs';
 
 export interface formInputType extends DropdownInputProps {
   inputType: string;
@@ -11,7 +11,7 @@ interface ModalWindowProps {
   setIsOpen: (state: boolean) => void; // Modal window open state event handler
   title: string; // Modal window title
   comment?: string; // Modal window description
-  buttonAction: (formData: Record<string, string>) => Promise<null>; // Callback function for action button
+  buttonAction: (formData: Record<string, string>) => void; // Callback function for action button
 }
 
 type ModalTextProps = {
