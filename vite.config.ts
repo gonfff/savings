@@ -1,5 +1,6 @@
-import { defineConfig } from "vite";
-import solid from "vite-plugin-solid";
+import path from 'path';
+import { defineConfig } from 'vite';
+import solid from 'vite-plugin-solid';
 
 // @ts-expect-error process is a nodejs global
 const host = process.env.TAURI_DEV_HOST;
@@ -19,14 +20,22 @@ export default defineConfig(async () => ({
     host: host || false,
     hmr: host
       ? {
-          protocol: "ws",
+          protocol: 'ws',
           host,
           port: 1421,
         }
       : undefined,
     watch: {
       // 3. tell vite to ignore watching `src-tauri`
-      ignored: ["**/src-tauri/**"],
+      ignored: ['**/src-tauri/**'],
+    },
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(
+        path.dirname(new URL(import.meta.url).pathname),
+        'src/',
+      ),
     },
   },
 }));

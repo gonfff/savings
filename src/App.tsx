@@ -1,6 +1,7 @@
+import { Sidebar } from '@/components/sidebar';
+import { Toaster } from '@/components/toasts';
+import { Routes } from '@/routes';
 import { Router } from '@solidjs/router';
-import { Sidebar } from './components/sidebar.tsx';
-import { Routes } from './Routes.tsx';
 
 export default function App() {
   return (
@@ -10,6 +11,7 @@ export default function App() {
     >
       <Sidebar routes={Routes} />
       <Router>{Routes}</Router>
+      <Toaster />
     </div>
   );
 }

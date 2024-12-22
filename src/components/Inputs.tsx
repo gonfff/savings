@@ -1,25 +1,8 @@
+import { DropdownInputProps, StringInputProps } from '@/types/inputs';
+import { queryItem } from '@/types/modal-window';
 import { createEffect, createSignal, For } from 'solid-js';
 
-export interface FormInputProps {
-  name: string;
-  type: string;
-  placeholder?: string;
-  value?: string;
-  required?: boolean;
-}
-
-export interface DropdownInputProps extends FormInputProps {
-  fetchFunction?: (query: string) => Promise<any[]>;
-  setCustomInputData?: (key: string, value: string) => void;
-}
-
-export interface queryItem {
-  id: number;
-  name: string;
-  description?: string;
-}
-
-export const FormInput = (props: FormInputProps) => {
+export const FormInput = (props: StringInputProps) => {
   return (
     <label class="block py-3 block font-medium text-sm">
       {props.name.charAt(0).toUpperCase() + props.name.slice(1)}
@@ -37,7 +20,9 @@ export const FormInput = (props: FormInputProps) => {
 };
 
 export const DropdownInput = (props: DropdownInputProps) => {
-  const [query, setQuery] = createSignal<queryItem>({ id: 0, name: '' });
+  const [query, setQuery] = createSignal<queryItem>(
+    props.item ? props.item : { id: 0, name: '' },
+  );
   const [fetchedItems, setFetchedItems] = createSignal<queryItem[]>([]);
   const [showDropdown, setShowDropdown] = createSignal<boolean>(false);
 
@@ -46,7 +31,7 @@ export const DropdownInput = (props: DropdownInputProps) => {
       ? ((await props.fetchFunction(query)) as queryItem[])
       : [];
     if (data.length === 0) {
-      data.push({ id: 0, name: 'No results found', description: 'add assets' });
+      data.push({ id: 0, name: 'No results found', description: '' });
     }
     setFetchedItems(data);
     setShowDropdown(data.length > 0);
@@ -98,7 +83,7 @@ export const DropdownInput = (props: DropdownInputProps) => {
                   }}
                 >
                   {item.description
-                    ? item.name + ', ' + item.description
+                    ? `${item.name}, ${item.description}`
                     : item.name}
                 </a>
               </li>

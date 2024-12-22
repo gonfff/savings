@@ -1,4 +1,6 @@
-export const TableRowButton = () => {
+import { TableRowButtonProps } from '@/types/buttons';
+
+export const TableRowButton = (props: TableRowButtonProps) => {
   return (
     <div class="dropdown dropdown-end">
       <div
@@ -23,26 +25,16 @@ export const TableRowButton = () => {
         class="dropdown-content menu bg-base-100 z-[1] w-32 p-2 shadow"
       >
         <li>
-          <a class="rounded-none">Edit</a>
+          <a class="rounded-none" onClick={props.editFunc}>
+            Edit
+          </a>
         </li>
         <li>
-          <a class="rounded-none">Delete</a>
+          <a class="rounded-none" onClick={props.deleteFunc}>
+            Delete
+          </a>
         </li>
       </ul>
     </div>
-  );
-};
-
-export const AddRateButton = ({
-  title,
-  setIsOpen,
-}: {
-  title: string;
-  setIsOpen: (isOpen: boolean) => void;
-}) => {
-  return (
-    <button class="btn btn-primary" onClick={() => setIsOpen(true)}>
-      {title}
-    </button>
   );
 };

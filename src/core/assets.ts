@@ -1,18 +1,5 @@
+import { Asset, dropdownAsset } from '@/types/assets';
 import { invoke } from '@tauri-apps/api/core';
-
-export interface Asset {
-  id: number;
-  code: string;
-  type: string;
-  name: string;
-  created_at: Date;
-}
-
-export interface dropdownAsset {
-  id: number;
-  name: string;
-  description: string;
-}
 
 export const fetchSearchAssets = async (
   query: string,

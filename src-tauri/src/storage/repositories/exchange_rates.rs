@@ -79,7 +79,7 @@ impl ExchangeRatesRepository {
             .bind(id)
             .execute(executor)
             .await;
-
+        println!("update res: {:?}", res);
         match res {
             Ok(_) => Ok(()),
             Err(e) => Err(DatabaseError::Error(e.to_string())),

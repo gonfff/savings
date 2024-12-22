@@ -1,22 +1,8 @@
-import { For } from 'solid-js';
+import { DropdownInput, FormInput } from '@/components/inputs';
+import { DropdownInputProps } from '@/types/inputs';
+import { ModalTextProps, ModalWindowProps } from '@/types/modal-window';
+import { For, Match, Switch } from 'solid-js';
 import { createStore } from 'solid-js/store';
-import { DropdownInput, DropdownInputProps, FormInput } from './inputs';
-
-export interface formInputType extends DropdownInputProps {
-  inputType: string;
-}
-interface ModalWindowProps {
-  formInputs: formInputType[];
-  isOpen: () => boolean; // Modal window open state
-  setIsOpen: (state: boolean) => void; // Modal window open state event handler
-  title: string; // Modal window title
-  comment?: string; // Modal window description
-  buttonAction: (formData: Record<string, string>) => void; // Callback function for action button
-}
-
-type ModalTextProps = {
-  text: string;
-};
 
 export const ModalWindow = (props: ModalWindowProps) => {
   const [customInputData, setCustomInputData] = createStore<
@@ -34,53 +20,63 @@ export const ModalWindow = (props: ModalWindowProps) => {
         >
           <div class="modal-box h-max">
             <form
-              onSubmit={(e) => {
-                e.preventDefault();
+              onSubmit={(event) => {
+                event.preventDefault();
                 // get value of all form inputs
-                const formData = new FormData(e.currentTarget);
+                const formData = new FormData(event.currentTarget);
                 const data: Record<string, string> = {};
+
+                // set defaults
+                props.formInputs.map((item) => {
+                  switch (item.inputType) {
+                    case 'DropdownInput': {
+                      const input = item.input as DropdownInputProps;
+                      setCustomInputData(
+                        input.name,
+                        customInputData[input.name] ||
+                          input.item?.id.toString() ||
+                          '',
+                      );
+                      break;
+                    }
+                  }
+                });
+                console.log(data);
+
                 formData.forEach((value, key) => {
                   data[key] = value.toString();
                 });
+
                 // set custom input data e.g. id from dropdown
                 Object.entries(customInputData).map(
                   ([key, value]) => (data[key] = value as string),
                 );
 
-                props.buttonAction(data);
+                console.log(data);
+
+                props.actionButton(data);
                 props.setIsOpen(false);
               }}
             >
               <ModalTitle text={props.title} />
               <ModalComment text={props.comment || ''} />
-              {
-                <div class="form-control">
-                  {/* render form inputs here to prevent saving input data */}
-                  <For each={props.formInputs ?? []} fallback={<></>}>
-                    {(item) =>
-                      item.inputType === 'FormInput' ? (
-                        <FormInput
-                          name={item.name}
-                          type={item.type}
-                          placeholder={item.placeholder}
-                          value={item.value}
-                          required={item.required}
-                        />
-                      ) : item.inputType === 'DropdownInput' ? (
+              <div class="form-control">
+                <For each={props.formInputs ?? []} fallback={<></>}>
+                  {(item) => (
+                    <Switch fallback={<div>Not Found</div>}>
+                      <Match when={item.inputType === 'StringInput'}>
+                        <FormInput {...item.input} />
+                      </Match>
+                      <Match when={item.inputType === 'DropdownInput'}>
                         <DropdownInput
-                          name={item.name}
-                          type={item.type}
-                          placeholder={item.placeholder}
-                          value={item.value}
-                          required={item.required}
-                          fetchFunction={item.fetchFunction}
+                          {...item.input}
                           setCustomInputData={setCustomInputData}
                         />
-                      ) : null
-                    }
-                  </For>
-                </div>
-              }
+                      </Match>
+                    </Switch>
+                  )}
+                </For>
+              </div>
               <div class="modal-action">
                 <button class="form-submit btn btn-primary" type="submit">
                   Save

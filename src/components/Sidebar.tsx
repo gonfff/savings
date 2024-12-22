@@ -1,10 +1,5 @@
-import { Component, createSignal } from 'solid-js';
-
-export interface menuRoute {
-  name: string;
-  path: string;
-  component: Component;
-}
+import { menuRoute } from '@/types/sidebar';
+import { createSignal } from 'solid-js';
 
 const [selectedMenu, setSelectedMenu] = createSignal('Dashboard');
 
@@ -31,7 +26,7 @@ const Menu = ({ routes }: { routes: menuRoute[] }) => {
       {routes.map((menu) => (
         <li>
           <a
-            class={`menu-item rounded-none  ${selectedMenu() === menu.name ? 'active' : ''}`}
+            class={`menu-item rounded-none ${selectedMenu() === menu.name ? 'active' : ''}`}
             onClick={() => handleMenuClick(menu.name)}
             href={menu.path}
           >

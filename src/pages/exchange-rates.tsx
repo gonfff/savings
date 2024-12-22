@@ -1,25 +1,31 @@
-import { createEffect, createSignal, For } from 'solid-js';
-import { AddRateButton, TableRowButton } from '../components/buttons.tsx';
+import { TableRowButton } from '@/components/buttons';
 import {
-  getReloadContext,
-  ReloadProvider,
-} from '../components/contexts/reload.tsx';
-import { formInputType, ModalWindow } from '../components/modal-window.tsx';
-import { PaginatedContainer } from '../components/pagination.tsx';
-import { fetchSearchAssets } from '../services/assets.ts';
+  getModalContext,
+  ModalProvider,
+} from '@/components/contexts/modal-window';
+import { getReloadContext, ReloadProvider } from '@/components/contexts/reload';
+import { ModalWindow } from '@/components/modal-window';
+import { PaginatedContainer } from '@/components/pagination';
+import { fetchSearchAssets } from '@/core/assets';
 import {
-  addExchangeRate,
-  ExchangeRate,
-  ExchangeRateRequest,
+  addRateButtonAction,
+  deleteExchangeRate,
+  editRateButtonAction,
   fetchExchangeRates,
-} from '../services/exchange-rates.ts';
+} from '@/core/exchange-rates';
+import { ExchangeRate } from '@/types/exchange-rates';
+import { Input } from '@/types/modal-window';
+import { createEffect, createSignal, For } from 'solid-js';
 
 const ExchangeRatesPage = () => {
   return (
     <div class="flex flex-col mr-3 mt-3 h-screen">
       <ReloadProvider>
-        <ExchangeRatesHeader />
-        <ExchangeRatesTable />
+        <ModalProvider>
+          <ExchangeRatesHeader />
+          <ExchangeRatesTable />
+          <ExchangeRateModal />
+        </ModalProvider>
       </ReloadProvider>
     </div>
   );
@@ -32,71 +38,10 @@ const ExchangeRatesHeader = () => {
     <div class="h-20 flex flex-col">
       <div class="flex flex-row flex-1 items-center">
         <h1 class="flex-1 text-2xl font-bold text-left">Exchange Rates</h1>
-        <AddRate />
+        <AddRateButton />
       </div>
       <div class="divider"></div>
     </div>
-  );
-};
-
-const AddRate = () => {
-  const [isOpen, setIsOpen] = createSignal(false);
-
-  // Get setter for reload signal from context
-  const { setReload } = getReloadContext();
-
-  const items: formInputType[] = [
-    {
-      inputType: 'DropdownInput',
-      name: 'from',
-      type: 'text',
-      placeholder: 'AAPL',
-      required: true,
-      fetchFunction: fetchSearchAssets,
-    },
-    {
-      inputType: 'DropdownInput',
-      name: 'to',
-      type: 'text',
-      placeholder: 'USD',
-      required: true,
-      fetchFunction: fetchSearchAssets,
-    },
-    {
-      inputType: 'FormInput',
-      name: 'rate',
-      type: 'float',
-      placeholder: '3.123',
-      required: true,
-    },
-    {
-      inputType: 'FormInput',
-      name: 'date',
-      type: 'date',
-      value: new Date().toISOString().split('T')[0],
-    },
-  ];
-  return (
-    <>
-      <AddRateButton title="Add Rate" setIsOpen={setIsOpen} />
-      <ModalWindow
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        formInputs={items}
-        title="Add Exchange Rate"
-        comment="Dont forget to add assets first"
-        buttonAction={async (formData) => {
-          const exchangeRateRequest: ExchangeRateRequest = {
-            from_id: parseInt(formData.from),
-            to_id: parseInt(formData.to),
-            rate: parseFloat(formData.rate),
-            to_date: new Date(formData.date),
-          };
-          await addExchangeRate(exchangeRateRequest);
-          setReload(true);
-        }}
-      />
-    </>
   );
 };
 
@@ -136,7 +81,7 @@ const ExchangeRatesTable = () => {
             <th></th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="h-full">
           <For each={rates() ?? []} fallback={<></>}>
             {(rate) => <ExchangeRatesRow rate={rate} />}
           </For>
@@ -147,6 +92,9 @@ const ExchangeRatesTable = () => {
 };
 
 const ExchangeRatesRow = ({ rate }: { rate: ExchangeRate }) => {
+  const { setReload } = getReloadContext();
+  const { isOpen, setIsOpen, setCurrentData } = getModalContext();
+
   return (
     <tr>
       <td>{rate.to_date.toLocaleDateString()}</td>
@@ -155,8 +103,114 @@ const ExchangeRatesRow = ({ rate }: { rate: ExchangeRate }) => {
       <td>{rate.rate}</td>
       <td>{rate.source}</td>
       <td>
-        <TableRowButton />
+        <TableRowButton
+          editFunc={() => {
+            setCurrentData({
+              formInputs: exchangeRatesFormInputs(rate),
+              isOpen: isOpen,
+              setIsOpen: setIsOpen,
+              title: 'Edit Exchange Rate',
+              comment: 'Dont forget to add assets first',
+              actionButton: editRateButtonAction(rate.id, setReload),
+            });
+            setIsOpen(true);
+          }}
+          deleteFunc={() => {
+            deleteExchangeRate(rate.id);
+            setReload(true);
+          }}
+        />
       </td>
     </tr>
   );
+};
+
+const ExchangeRateModal = () => {
+  const { isOpen, setIsOpen, currentData } = getModalContext();
+
+  return (
+    <ModalWindow
+      formInputs={currentData().formInputs}
+      isOpen={isOpen}
+      setIsOpen={setIsOpen}
+      title={currentData().title}
+      comment={currentData().comment}
+      actionButton={currentData().actionButton}
+    />
+  );
+};
+
+const AddRateButton = () => {
+  const { isOpen, setIsOpen, setCurrentData } = getModalContext();
+  const { setReload } = getReloadContext();
+
+  return (
+    <button
+      class="btn btn-primary"
+      onClick={() => {
+        setCurrentData({
+          formInputs: exchangeRatesFormInputs(),
+          isOpen: isOpen,
+          setIsOpen: setIsOpen,
+          title: 'Add Exchange Rate',
+          comment: 'Dont forget to add assets first',
+          actionButton: addRateButtonAction(setReload),
+        });
+        setIsOpen(true);
+      }}
+    >
+      Add rate
+    </button>
+  );
+};
+
+const exchangeRatesFormInputs = (rate?: ExchangeRate): Input[] => {
+  return [
+    {
+      input: {
+        name: 'from',
+        type: 'text',
+        placeholder: 'AAPL',
+        required: true,
+        fetchFunction: fetchSearchAssets,
+        item: rate ? { id: rate.from_id, name: rate.from_code } : undefined,
+      },
+      inputType: 'DropdownInput',
+      key: 'from_id',
+    },
+    {
+      input: {
+        name: 'to',
+        type: 'text',
+        placeholder: 'USD',
+        required: true,
+        fetchFunction: fetchSearchAssets,
+        item: rate ? { id: rate.to_id, name: rate.to_code } : undefined,
+      },
+      inputType: 'DropdownInput',
+      key: 'to_id',
+    },
+    {
+      input: {
+        name: 'rate',
+        type: 'float',
+        placeholder: '3.123',
+        required: true,
+        value: rate ? rate.rate.toString() : undefined,
+      },
+      inputType: 'StringInput',
+      key: 'rate',
+    },
+    {
+      input: {
+        name: 'date',
+        type: 'date',
+        value: rate
+          ? new Date(rate.to_date).toISOString().split('T')[0]
+          : new Date().toISOString().split('T')[0],
+      },
+      inputType: 'StringInput',
+      key: 'to_date',
+    },
+  ];
 };

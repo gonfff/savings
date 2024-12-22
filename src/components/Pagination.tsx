@@ -1,23 +1,5 @@
-import {
-  createEffect,
-  createSignal,
-  onCleanup,
-  onMount,
-  ParentProps,
-} from 'solid-js';
-import { PaginatedResponse } from '../services/base.types';
-
-interface PaginatedContainerProps {
-  limit: number;
-  offset: () => number;
-  setOffset: (offset: number) => void;
-  items: () => any[] | null;
-  setItems: (items: any[] | null) => void;
-  fetchFunction: (
-    limit: number,
-    offset: number,
-  ) => Promise<PaginatedResponse<any>>;
-}
+import { PaginatedContainerProps } from '@/types/pagination';
+import { createEffect, createSignal, onCleanup, ParentProps } from 'solid-js';
 
 export const PaginatedContainer = (
   props: ParentProps<PaginatedContainerProps>,
@@ -56,27 +38,19 @@ export const PaginatedContainer = (
     }
   });
 
-  const initialFetch = async () => {
-    const data = await props.fetchFunction(props.limit, props.offset());
-    props.setItems(data.items);
-    setNextPage(data.next);
-  };
-
-  // fetch data on mount
-  onMount(async () => {
-    await initialFetch();
-  });
-
   // fetch data on offset reload
   createEffect(() => {
     if (props.offset() === 0 && props.items() === null) {
-      initialFetch();
+      props.fetchFunction(props.limit, props.offset()).then((data) => {
+        props.setItems(data.items);
+        setNextPage(data.next);
+      });
     }
   });
 
   // render children with container reference for scroll event
   return (
-    <div ref={container} class="overflow-y-auto">
+    <div ref={container} class="overflow-y-auto h-full">
       {props.children}
     </div>
   );
