@@ -1,6 +1,6 @@
 import { Sidebar } from '@/components/sidebar';
-import { Toaster } from '@/components/toasts';
-import { Routes } from '@/routes';
+import { Toaster } from '@/components/toast';
+import { Routes } from '@/Routes';
 import { Router } from '@solidjs/router';
 
 export default function App() {
