@@ -1,13 +1,22 @@
-import { DropdownInput, FormInput } from '@/components/inputs';
-import { DropdownInputProps } from '@/types/inputs';
+import { Input, inputType, inputValue } from '@/types/inputs';
 import { ModalTextProps, ModalWindowProps } from '@/types/modal-window';
-import { For, Match, Switch } from 'solid-js';
+import { createEffect, For, Match, Switch } from 'solid-js';
 import { createStore } from 'solid-js/store';
+import { DropdownInput, FormInput } from './inputs';
 
 export const ModalWindow = (props: ModalWindowProps) => {
-  const [customInputData, setCustomInputData] = createStore<
-    Record<string, string>
-  >({});
+  const [inputs, setInputs] = createStore<Record<string, Input>>();
+  createEffect(() => {
+    props.inputs.forEach((input) => {
+      setInputs(input.key, input);
+    });
+  });
+
+  const setter = (key: string) => {
+    return (value: inputValue) => {
+      setInputs(key, 'value', value);
+    };
+  };
 
   return (
     <>
@@ -22,38 +31,13 @@ export const ModalWindow = (props: ModalWindowProps) => {
             <form
               onSubmit={(event) => {
                 event.preventDefault();
-                // get value of all form inputs
-                const formData = new FormData(event.currentTarget);
-                const data: Record<string, string> = {};
+                const data: Record<string, inputValue> = {};
 
-                // set defaults
-                props.formInputs.map((item) => {
-                  switch (item.inputType) {
-                    case 'DropdownInput': {
-                      const input = item.input as DropdownInputProps;
-                      setCustomInputData(
-                        input.name,
-                        customInputData[input.name] ||
-                          input.item?.id.toString() ||
-                          '',
-                      );
-                      break;
-                    }
-                  }
-                });
-                console.log(data);
-
-                formData.forEach((value, key) => {
-                  data[key] = value.toString();
-                });
-
-                // set custom input data e.g. id from dropdown
-                Object.entries(customInputData).map(
-                  ([key, value]) => (data[key] = value as string),
-                );
-
-                console.log(data);
-
+                if (inputs) {
+                  Object.entries(inputs).forEach(([key, value]) => {
+                    data[key] = value.value;
+                  });
+                }
                 props.actionButton(data);
                 props.setIsOpen(false);
               }}
@@ -61,16 +45,18 @@ export const ModalWindow = (props: ModalWindowProps) => {
               <ModalTitle text={props.title} />
               <ModalComment text={props.comment || ''} />
               <div class="form-control">
-                <For each={props.formInputs ?? []} fallback={<></>}>
-                  {(item) => (
+                <For each={Object.keys(inputs) ?? []} fallback={<></>}>
+                  {(key) => (
                     <Switch fallback={<div>Not Found</div>}>
-                      <Match when={item.inputType === 'StringInput'}>
-                        <FormInput {...item.input} />
+                      <Match when={inputs[key].type === inputType.StringInput}>
+                        <FormInput input={inputs[key]} setter={setter(key)} />
                       </Match>
-                      <Match when={item.inputType === 'DropdownInput'}>
+                      <Match
+                        when={inputs[key].type === inputType.DropdownInput}
+                      >
                         <DropdownInput
-                          {...item.input}
-                          setCustomInputData={setCustomInputData}
+                          input={inputs[key]}
+                          setter={setter(key)}
                         />
                       </Match>
                     </Switch>

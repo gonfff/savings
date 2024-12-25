@@ -1,7 +1,7 @@
 import { Asset, dropdownAsset } from '@/types/assets';
 import { invoke } from '@tauri-apps/api/core';
 
-export const fetchSearchAssets = async (
+export const fetchDropdownSearchAssets = async (
   query: string,
 ): Promise<dropdownAsset[]> => {
   const resp = (await invoke('search_assets', {
@@ -10,7 +10,7 @@ export const fetchSearchAssets = async (
 
   return resp.map((item) => ({
     id: item.id,
-    name: item.code,
+    value: item.code,
     description: item.name,
   }));
 };

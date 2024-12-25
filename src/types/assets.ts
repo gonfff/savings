@@ -8,6 +8,6 @@ export interface Asset {
 
 export interface dropdownAsset {
   id: number;
-  name: string;
+  value: string;
   description: string;
 }

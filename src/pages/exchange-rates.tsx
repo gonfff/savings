@@ -6,15 +6,17 @@ import {
 import { getReloadContext, ReloadProvider } from '@/components/contexts/reload';
 import { ModalWindow } from '@/components/modal-window';
 import { PaginatedContainer } from '@/components/pagination';
-import { fetchSearchAssets } from '@/core/assets';
+import { fetchDropdownSearchAssets } from '@/core/assets';
 import {
   addRateButtonAction,
   deleteExchangeRate,
   editRateButtonAction,
   fetchExchangeRates,
+  validateAssetInput,
+  validateRateInput,
 } from '@/core/exchange-rates';
 import { ExchangeRate } from '@/types/exchange-rates';
-import { Input } from '@/types/modal-window';
+import { Input, inputDataTypes, inputType } from '@/types/inputs';
 import { createEffect, createSignal, For } from 'solid-js';
 
 const ExchangeRatesPage = () => {
@@ -106,7 +108,7 @@ const ExchangeRatesRow = ({ rate }: { rate: ExchangeRate }) => {
         <TableRowButton
           editFunc={() => {
             setCurrentData({
-              formInputs: exchangeRatesFormInputs(rate),
+              inputs: exchangeRatesFormInputs(rate),
               isOpen: isOpen,
               setIsOpen: setIsOpen,
               title: 'Edit Exchange Rate',
@@ -130,12 +132,13 @@ const ExchangeRateModal = () => {
 
   return (
     <ModalWindow
-      formInputs={currentData().formInputs}
+      inputs={currentData.inputs}
+      // setInputs={setInputs}
       isOpen={isOpen}
       setIsOpen={setIsOpen}
-      title={currentData().title}
-      comment={currentData().comment}
-      actionButton={currentData().actionButton}
+      title={currentData.title}
+      comment={currentData.comment}
+      actionButton={currentData.actionButton}
     />
   );
 };
@@ -149,7 +152,7 @@ const AddRateButton = () => {
       class="btn btn-primary"
       onClick={() => {
         setCurrentData({
-          formInputs: exchangeRatesFormInputs(),
+          inputs: exchangeRatesFormInputs(),
           isOpen: isOpen,
           setIsOpen: setIsOpen,
           title: 'Add Exchange Rate',
@@ -167,50 +170,52 @@ const AddRateButton = () => {
 const exchangeRatesFormInputs = (rate?: ExchangeRate): Input[] => {
   return [
     {
-      input: {
-        name: 'from',
-        type: 'text',
-        placeholder: 'AAPL',
-        required: true,
-        fetchFunction: fetchSearchAssets,
-        item: rate ? { id: rate.from_id, name: rate.from_code } : undefined,
-      },
-      inputType: 'DropdownInput',
+      type: inputType.DropdownInput,
       key: 'from_id',
+      title: 'Form',
+      placeholder: 'AAPL',
+      required: true,
+      dataType: inputDataTypes.String,
+      fetchFunction: fetchDropdownSearchAssets,
+      value: rate
+        ? { id: rate.from_id, value: rate.from_code }
+        : { id: 0, value: '' },
+      validationFunction: validateAssetInput,
     },
     {
-      input: {
-        name: 'to',
-        type: 'text',
-        placeholder: 'USD',
-        required: true,
-        fetchFunction: fetchSearchAssets,
-        item: rate ? { id: rate.to_id, name: rate.to_code } : undefined,
-      },
-      inputType: 'DropdownInput',
+      type: inputType.DropdownInput,
       key: 'to_id',
+      title: 'To',
+      placeholder: 'USD',
+      required: true,
+      dataType: inputDataTypes.String,
+      fetchFunction: fetchDropdownSearchAssets,
+      value: rate
+        ? { id: rate.to_id, value: rate.to_code }
+        : { id: 0, value: '' },
+      validationFunction: validateAssetInput,
     },
     {
-      input: {
-        name: 'rate',
-        type: 'float',
-        placeholder: '3.123',
-        required: true,
-        value: rate ? rate.rate.toString() : undefined,
-      },
-      inputType: 'StringInput',
+      type: inputType.StringInput,
       key: 'rate',
+      title: 'Rate',
+      placeholder: '3.123',
+      required: true,
+      dataType: inputDataTypes.Number,
+      value: rate ? { id: 0, value: rate.rate } : { id: 0, value: '' },
+      validationFunction: validateRateInput,
     },
     {
-      input: {
-        name: 'date',
-        type: 'date',
+      type: inputType.StringInput,
+      key: 'to_date',
+      title: 'Date',
+      dataType: inputDataTypes.Date,
+      value: {
+        id: 0,
         value: rate
           ? new Date(rate.to_date).toISOString().split('T')[0]
           : new Date().toISOString().split('T')[0],
       },
-      inputType: 'StringInput',
-      key: 'to_date',
     },
   ];
 };

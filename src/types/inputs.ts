@@ -1,19 +1,33 @@
-import { queryItem } from '@/types/modal-window';
-
-export interface StringInputProps {
-  name: string;
-  type: string;
-  placeholder?: string;
-  value?: string;
-  required?: boolean;
+export enum inputType {
+  DropdownInput = 'DropdownInput',
+  StringInput = 'StringInput',
 }
 
-export interface DropdownInputProps {
-  name: string;
-  type: string;
+export enum inputDataTypes {
+  String = 'string',
+  Number = 'number',
+  Date = 'date',
+}
+
+export interface inputValue {
+  value: string | number;
+  id: number;
+  description?: string;
+}
+
+export interface Input {
+  type: inputType;
+  key: string;
+  title: string;
   placeholder?: string;
   required?: boolean;
-  item?: queryItem;
+  value: inputValue;
+  dataType?: inputDataTypes;
   fetchFunction?: (query: string) => Promise<any[]>;
-  setCustomInputData?: (key: string, value: string) => void;
+  validationFunction?: (value: inputValue) => boolean;
+}
+
+export interface InputProps {
+  input: Input;
+  setter: (value: inputValue) => void;
 }

@@ -1,6 +1,7 @@
 import { addToast } from '@/core/toasts';
 import { PaginatedResponse } from '@/types/base';
 import { ExchangeRate, ExchangeRateRequest } from '@/types/exchange-rates';
+import { inputValue } from '@/types/inputs';
 import { ToastStyle } from '@/types/toasts';
 import { invoke } from '@tauri-apps/api/core';
 
@@ -22,6 +23,7 @@ export const fetchExchangeRates = async (
 export const addExchangeRate = async (
   rate: ExchangeRateRequest,
 ): Promise<null> => {
+  console.log('Adding exchange rate', rate);
   await invoke<null>('add_exchange_rate', { rate });
   return null;
 };
@@ -35,19 +37,20 @@ export const updateExchangeRate = async (
   id: number,
   rate: ExchangeRateRequest,
 ): Promise<null> => {
+  console.log('Updating exchange rate', id, rate);
   await invoke<null>('update_exchange_rate', { id, rate });
   return null;
 };
 
 export const addRateButtonAction = (
   setReload: (value: boolean) => void,
-): ((formData: Record<string, string>) => Promise<void>) => {
-  return async (formData: Record<string, string>) => {
+): ((formData: Record<string, inputValue>) => Promise<void>) => {
+  return async (formData: Record<string, inputValue>) => {
     const exchangeRateRequest: ExchangeRateRequest = {
-      from_id: parseInt(formData.from),
-      to_id: parseInt(formData.to),
-      rate: parseFloat(formData.rate),
-      to_date: new Date(formData.date),
+      from_id: formData.from_id.id,
+      to_id: formData.to_id.id,
+      rate: parseFloat(formData.rate.value as string),
+      to_date: new Date(formData.to_date.value as string),
     };
     try {
       await addExchangeRate(exchangeRateRequest);
@@ -71,13 +74,13 @@ export const addRateButtonAction = (
 export const editRateButtonAction = (
   id: number,
   setReload: (value: boolean) => void,
-): ((formData: Record<string, string>) => Promise<void>) => {
-  return async (formData: Record<string, string>) => {
+): ((formData: Record<string, inputValue>) => Promise<void>) => {
+  return async (formData: Record<string, inputValue>) => {
     const exchangeRateRequest: ExchangeRateRequest = {
-      from_id: parseInt(formData.from),
-      to_id: parseInt(formData.to),
-      rate: parseFloat(formData.rate),
-      to_date: new Date(formData.date),
+      from_id: formData.from_id.id,
+      to_id: formData.to_id.id,
+      rate: parseFloat(formData.rate.value as string),
+      to_date: new Date(formData.to_date.value as string),
     };
     try {
       await updateExchangeRate(id, exchangeRateRequest);
@@ -98,4 +101,21 @@ export const editRateButtonAction = (
   };
 };
 
-export const exchangeRateValidator = () => {};
+export const validateAssetInput = (value: inputValue): boolean => {
+  if (value.value === '' && value.id === 0) {
+    return true;
+  } else if (value.value && value.id === 0) {
+    return false;
+  }
+  return true;
+};
+
+export const validateRateInput = (value: inputValue): boolean => {
+  if (typeof value.value === 'string' && parseFloat(value.value)) {
+    return true;
+  }
+  if (typeof value.value === 'number' && !isNaN(value.value)) {
+    return true;
+  }
+  return false;
+};
