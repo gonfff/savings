@@ -1,60 +1,72 @@
+import { InputProps, inputValue } from '@/types/inputs';
 import { createEffect, createSignal, For } from 'solid-js';
 
-export interface FormInputProps {
-  name: string;
-  type: string;
-  placeholder?: string;
-  value?: string;
-  required?: boolean;
-}
+export const FormInput = (props: InputProps) => {
+  const [error, setError] = createSignal<boolean>(false);
 
-export interface DropdownInputProps extends FormInputProps {
-  fetchFunction?: (query: string) => Promise<any[]>;
-  setCustomInputData?: (key: string, value: string) => void;
-}
+  createEffect(() => {
+    if (props.input.value.value === '') {
+      setError(false);
+    } else if (props.input.validationFunction) {
+      setError(!props.input.validationFunction(props.input.value));
+    } else {
+      setError(false);
+    }
+  });
 
-export interface queryItem {
-  id: number;
-  name: string;
-  description?: string;
-}
-
-export const FormInput = (props: FormInputProps) => {
   return (
     <label class="block py-3 block font-medium text-sm">
-      {props.name.charAt(0).toUpperCase() + props.name.slice(1)}
+      {props.input.title}
       <input
-        class="placeholder:italic w-full border py-2 pl-2 h-10
-               shadow-sm focus:outline-none focus:border-primary focus:ring-primary focus:ring-1 no-arrows"
-        value={props.value || ''}
-        placeholder={props.placeholder || ''}
-        type={props.type}
-        name={props.name}
-        required={props.required}
+        class={`placeholder:italic w-full border py-2 pl-2 h-10
+               shadow-sm focus:outline-none focus:border-primary focus:ring-primary focus:ring-1 no-arrows
+               ${error() ? 'border-red-500' : ''}`}
+        value={props.input.value.value || ''}
+        placeholder={props.input.placeholder || ''}
+        type={props.input.dataType || 'string'}
+        name={props.input.key}
+        required={props.input.required}
+        step="any"
+        onInput={(event) => {
+          if (!event.currentTarget.validity.valid) {
+            setError(true);
+          }
+          props.setter({ id: 0, value: event.currentTarget.value });
+        }}
       />
     </label>
   );
 };
 
-export const DropdownInput = (props: DropdownInputProps) => {
-  const [query, setQuery] = createSignal<queryItem>({ id: 0, name: '' });
-  const [fetchedItems, setFetchedItems] = createSignal<queryItem[]>([]);
+export const DropdownInput = (props: InputProps) => {
+  const [fetchedItems, setFetchedItems] = createSignal<inputValue[]>([]);
   const [showDropdown, setShowDropdown] = createSignal<boolean>(false);
+  const [error, setError] = createSignal<boolean>(false);
+
+  createEffect(() => {
+    if (props.input.validationFunction) {
+      setError(!props.input.validationFunction(props.input.value));
+    } else {
+      setError(false);
+    }
+  });
 
   const fetchResults = async (query: string) => {
-    const data = props.fetchFunction
-      ? ((await props.fetchFunction(query)) as queryItem[])
-      : [];
+    if (!props.input.fetchFunction) {
+      return;
+    }
+
+    const data = await props.input.fetchFunction(query);
     if (data.length === 0) {
-      data.push({ id: 0, name: 'No results found', description: 'add assets' });
+      data.push({ id: 0, value: 'No results found', description: '' });
     }
     setFetchedItems(data);
     setShowDropdown(data.length > 0);
   };
 
   createEffect(() => {
-    const q = query().name.trim();
-    if (q.length >= 1 && !query().id) {
+    const q = props.input.value?.value.toString() || '';
+    if (q.length >= 1 && props.input.value!.id === 0) {
       fetchResults(q);
     } else {
       setFetchedItems([]);
@@ -64,20 +76,21 @@ export const DropdownInput = (props: DropdownInputProps) => {
 
   return (
     <label class="block py-3 block font-medium text-sm relative dropdown">
-      {props.name.charAt(0).toUpperCase() + props.name.slice(1)}
+      {props.input.title}
       <input
-        name={props.name}
-        type={props.type}
-        value={query().name}
-        placeholder={props.placeholder || ''}
-        class="placeholder:italic w-full border py-2 pl-2 h-10
-               shadow-sm focus:outline-none focus:border-primary focus:ring-primary focus:ring-1"
+        class={`placeholder:italic w-full border py-2 pl-2 h-10
+          shadow-sm focus:outline-none focus:border-primary focus:ring-primary focus:ring-1
+          ${error() ? 'border-red-500' : ''}`}
+        value={props.input.value?.value || ''}
+        placeholder={props.input.placeholder || ''}
+        type={props.input.dataType || 'string'}
+        step="any"
+        name={props.input.key}
+        required={props.input.required}
         onInput={(e) => {
-          setQuery({ id: 0, name: e.currentTarget.value });
-          props.setCustomInputData && props.setCustomInputData(props.name, '');
+          props.setter({ id: 0, value: e.currentTarget.value });
         }}
         onFocus={() => setShowDropdown(fetchedItems().length > 0)}
-        required={props.required}
         tabIndex={0}
         onBlur={() => setShowDropdown(false)}
       />
@@ -91,15 +104,13 @@ export const DropdownInput = (props: DropdownInputProps) => {
                   disabled={item.id === 0} // disable 'No results found' item
                   onMouseDown={(e) => e.preventDefault()} // Prevent blur
                   onClick={() => {
-                    setQuery({ id: item.id, name: item.name });
-                    props.setCustomInputData &&
-                      props.setCustomInputData(props.name, item.id.toString());
+                    props.setter({ id: item.id, value: item.value });
                     setShowDropdown(false);
                   }}
                 >
                   {item.description
-                    ? item.name + ', ' + item.description
-                    : item.name}
+                    ? `${item.value}, ${item.description}`
+                    : item.value}
                 </a>
               </li>
             )}
