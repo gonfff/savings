@@ -37,12 +37,12 @@ export default ExchangeRatesPage;
 
 const ExchangeRatesHeader = () => {
   return (
-    <div class="h-20 flex flex-col">
+    <div class="h-24 flex flex-col">
       <div class="flex flex-row flex-1 items-center">
         <h1 class="flex-1 text-2xl font-bold text-left">Exchange Rates</h1>
         <AddRateButton />
       </div>
-      <div class="divider"></div>
+      <div class="divider mt-1"></div>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { Asset, dropdownAsset } from '@/types/assets';
+import { Asset, dropdownAsset } from '@/types/dropdown-response';
 import { invoke } from '@tauri-apps/api/core';
 
 export const fetchDropdownSearchAssets = async (

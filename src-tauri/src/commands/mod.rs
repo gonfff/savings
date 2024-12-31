@@ -2,6 +2,8 @@ pub mod settings;
 pub mod exchange_rates;
 pub mod assets;
 
+pub mod kv;
+
 use thiserror::Error;
 
 #[derive(Error, Debug)]

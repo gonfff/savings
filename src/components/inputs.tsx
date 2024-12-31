@@ -66,6 +66,7 @@ export const DropdownInput = (props: InputProps) => {
 
   createEffect(() => {
     const q = props.input.value?.value.toString() || '';
+
     if (q.length >= 1 && props.input.value!.id === 0) {
       fetchResults(q);
     } else {
