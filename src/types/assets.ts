@@ -5,9 +5,3 @@ export interface Asset {
   name: string;
   created_at: Date;
 }
-
-export interface dropdownAsset {
-  id: number;
-  value: string;
-  description: string;
-}

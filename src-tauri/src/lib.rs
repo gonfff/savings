@@ -10,6 +10,7 @@ use commands::assets::{get_assets, search_assets};
 use commands::exchange_rates::{
     add_exchange_rate, delete_exchange_rate, get_exchange_rates, update_exchange_rate,
 };
+use commands::kv::{get_base_currency, set_base_currency};
 mod helpers;
 mod models;
 mod services;
@@ -47,6 +48,8 @@ pub async fn run() {
             delete_exchange_rate,
             get_assets,
             search_assets,
+            get_base_currency,
+            set_base_currency,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
