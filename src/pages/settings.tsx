@@ -1,5 +1,6 @@
 import { getThemeContext } from '@/components/contexts/theme';
 import { DropdownInput, DropdownSelect } from '@/components/inputs';
+import { SettingsCard } from '@/components/settings-card';
 import { fetchDropdownSearchAssets } from '@/core/assets';
 import {
   fetchBaseCurrency,
@@ -13,8 +14,9 @@ import {
   inputType,
   inputValue,
 } from '@/types/inputs';
+import { settingsMenuItems, SettingsMenuProps } from '@/types/settings';
 import { availableThemes } from '@/types/themes';
-import { onMount } from 'solid-js';
+import { createSignal, For, Match, onMount, Switch } from 'solid-js';
 import { createStore } from 'solid-js/store';
 
 const SettingsPage = () => {
@@ -40,14 +42,82 @@ const SettingsHeader = () => {
 };
 
 const SettingsContent = () => {
+  const [selectedMenu, setSelectedMenu] = createSignal(
+    settingsMenuItems.General,
+  );
+
   return (
-    <div class="space-y-4">
-      <BaseCurrencyCard />
-      <ThemeCard />
+    <div class="h-screen w-full grid grid-cols-[12rem_1fr]">
+      <SettingsMenu
+        selectedMenu={selectedMenu}
+        setSelectedMenu={setSelectedMenu}
+      />
+      <Switch fallback={<div>Settings not found</div>}>
+        <Match when={selectedMenu() === settingsMenuItems.General}>
+          <GeneralSettings />
+        </Match>
+        <Match when={selectedMenu() === settingsMenuItems.Locations}>
+          <LocationsSettings />
+        </Match>
+        <Match when={selectedMenu() === settingsMenuItems.Appearance}>
+          <AppearanceSettings />
+        </Match>
+      </Switch>
     </div>
   );
 };
 
+const SettingsMenu = (props: SettingsMenuProps) => {
+  return (
+    <div class="h-screen grid grid-cols-[11rem_1fr]">
+      <div class="menu flex">
+        <ul>
+          <For each={Object.values(settingsMenuItems)}>
+            {(item) => (
+              <li>
+                <a
+                  class={`menu-item rounded-none -ml-2 ${
+                    props.selectedMenu() === item ? 'active' : ''
+                  }`}
+                  onClick={() => {
+                    props.setSelectedMenu(item);
+                  }}
+                >
+                  {item}
+                </a>
+              </li>
+            )}
+          </For>
+        </ul>
+      </div>
+      <div class="divider divider-horizontal -ml-1 -mr-2 -mt-3"></div>
+    </div>
+  );
+};
+
+const GeneralSettings = () => {
+  return (
+    <div class="space-y-4">
+      <BaseCurrencyCard />
+    </div>
+  );
+};
+
+const LocationsSettings = () => {
+  return (
+    <div class="space-y-4">
+      <div class="bg-red-500">ХУЙХУЙХУЙ</div>
+    </div>
+  );
+};
+
+const AppearanceSettings = () => {
+  return (
+    <div class="space-y-4">
+      <ThemeCard />
+    </div>
+  );
+};
 const BaseCurrencyCard = () => {
   const [baseCurrency, setBaseCurrency] = createStore<inputValue>({
     id: 0,
@@ -75,23 +145,19 @@ const BaseCurrencyCard = () => {
   } as InputProps;
 
   return (
-    <div class="card w-full shadow-md border">
-      <div class="card-body">
-        <h2 class="card-title">Base currency</h2>
-        <p class="text-sm opacity-50">Select your base currency</p>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            saveBaseCurrencyButton(baseCurrency);
-          }}
-        >
-          <DropdownInput {...input} />
-          <div class="card-actions justify-end">
-            <button class="btn btn-primary">Save</button>
-          </div>
-        </form>
-      </div>
-    </div>
+    <SettingsCard title="Base Currency" description="Select your base currency">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          saveBaseCurrencyButton(baseCurrency);
+        }}
+      >
+        <DropdownInput {...input} />
+        <div class="card-actions justify-end">
+          <button class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </SettingsCard>
   );
 };
 
@@ -106,38 +172,35 @@ const ThemeCard = () => {
   };
 
   return (
-    <div class="card w-full shadow-md border">
-      <div class="card-body">
-        <h2 class="card-title">Theme</h2>
-        <p class="text-sm opacity-50">
-          Select theme. You should press "save" button for saving between
-          sessions.
-        </p>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            saveThemeButton(theme());
+    <SettingsCard
+      title="Theme"
+      description="Select theme. You should press 'save' button for saving between
+          sessions."
+    >
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          saveThemeButton(theme());
+        }}
+      >
+        <DropdownSelect
+          input={{
+            type: inputType.DropdownSelect,
+            key: 'theme',
+            title: '',
+            placeholder: '',
+            required: true,
+            dataType: inputDataTypes.String,
+            fetchFunction: themeList,
+            value: { id: 1, value: theme() },
+            validationFunction: () => true,
           }}
-        >
-          <DropdownSelect
-            input={{
-              type: inputType.DropdownSelect,
-              key: 'theme',
-              title: '',
-              placeholder: '',
-              required: true,
-              dataType: inputDataTypes.String,
-              fetchFunction: themeList,
-              value: { id: 1, value: theme() },
-              validationFunction: () => true,
-            }}
-            setter={(value: inputValue) => setTheme(value.value.toString())}
-          />
-          <div class="card-actions justify-end">
-            <button class="btn btn-primary">Save</button>
-          </div>
-        </form>
-      </div>
-    </div>
+          setter={(value: inputValue) => setTheme(value.value.toString())}
+        />
+        <div class="card-actions justify-end">
+          <button class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </SettingsCard>
   );
 };
