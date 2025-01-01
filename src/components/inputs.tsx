@@ -18,7 +18,7 @@ export const FormInput = (props: InputProps) => {
     <label class="block py-3 block font-medium text-sm">
       {props.input.title}
       <input
-        class={`placeholder:italic w-full border py-2 pl-2 h-10
+        class={`input placeholder:italic w-full border py-2 pl-2 h-10
                shadow-sm focus:outline-none focus:border-primary focus:ring-primary focus:ring-1 no-arrows
                ${error() ? 'border-red-500' : ''}`}
         value={props.input.value.value || ''}
@@ -79,7 +79,7 @@ export const DropdownInput = (props: InputProps) => {
     <label class="block py-3 block font-medium text-sm relative dropdown">
       {props.input.title}
       <input
-        class={`placeholder:italic w-full border py-2 pl-2 h-10
+        class={`input placeholder:italic w-full border py-2 pl-2 h-10
           shadow-sm focus:outline-none focus:border-primary focus:ring-primary focus:ring-1
           ${error() ? 'border-red-500' : ''}`}
         value={props.input.value?.value || ''}
@@ -119,5 +119,58 @@ export const DropdownInput = (props: InputProps) => {
         </ul>
       )}
     </label>
+  );
+};
+
+export const DropdownSelect = (props: InputProps) => {
+  const [fetchedItems, setFetchedItems] = createSignal<inputValue[]>([]);
+  const [isOpen, setIsOpen] = createSignal(false);
+
+  const fetchResults = async () => {
+    const data = await props.input.fetchFunction!('');
+    setFetchedItems(data);
+  };
+
+  createEffect(async () => {
+    await fetchResults();
+  });
+
+  return (
+    <>
+      <div class="dropdown dropdown-start disabled w-full py-3">
+        <input
+          tabindex="0"
+          class="input disabled placeholder:italic w-full border py-2 pl-2 h-10
+          shadow-sm focus:outline-none focus:border-primary focus:ring-primary focus:ring-1"
+          type="string"
+          value={props.input.value.value}
+          readonly
+          onFocus={() => setIsOpen(true)}
+        />
+        {isOpen() && (
+          <ul
+            tabindex="0"
+            class="menu dropdown-content flex-nowrap bg-base-100 z-[1] w-32 p-2
+            shadow max-h-48 flex flex-col overflow-y-auto overflow-x-hidden"
+          >
+            <For each={fetchedItems()} fallback={<>Error...</>}>
+              {(item) => (
+                <li>
+                  <a
+                    class="rounded-none"
+                    onClick={() => {
+                      props.setter({ id: item.id, value: item.value });
+                      setIsOpen(false);
+                    }}
+                  >
+                    {item.value}
+                  </a>
+                </li>
+              )}
+            </For>
+          </ul>
+        )}
+      </div>
+    </>
   );
 };

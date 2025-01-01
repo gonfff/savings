@@ -1,6 +1,7 @@
 export enum inputType {
   DropdownInput = 'DropdownInput',
   StringInput = 'StringInput',
+  DropdownSelect = 'DropdownSelect',
 }
 
 export enum inputDataTypes {

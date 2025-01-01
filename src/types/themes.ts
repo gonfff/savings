@@ -1,0 +1,15 @@
+export enum availableThemes {
+  Light = 'light',
+  Dark = 'dark',
+  Cupcake = 'cupcake',
+  Retro = 'retro',
+  Lofi = 'lofi',
+  Pastel = 'pastel',
+  Buisiness = 'buisiness',
+  Dracula = 'dracula',
+  Lemonade = 'lemonade',
+  Coffee = 'coffee',
+  Winter = 'winter',
+  Silk = 'silk',
+  Nord = 'nord',
+}

@@ -1,16 +1,19 @@
-import { DropdownInput } from '@/components/inputs';
+import { getThemeContext } from '@/components/contexts/theme';
+import { DropdownInput, DropdownSelect } from '@/components/inputs';
 import { fetchDropdownSearchAssets } from '@/core/assets';
 import {
   fetchBaseCurrency,
   saveBaseCurrencyButton,
   validateBaseCurrencyInput,
 } from '@/core/base-currency';
+import { saveThemeButton } from '@/core/themes';
 import {
   inputDataTypes,
   InputProps,
   inputType,
   inputValue,
 } from '@/types/inputs';
+import { availableThemes } from '@/types/themes';
 import { onMount } from 'solid-js';
 import { createStore } from 'solid-js/store';
 
@@ -38,9 +41,10 @@ const SettingsHeader = () => {
 
 const SettingsContent = () => {
   return (
-    <>
+    <div class="space-y-4">
       <BaseCurrencyCard />
-    </>
+      <ThemeCard />
+    </div>
   );
 };
 
@@ -82,6 +86,53 @@ const BaseCurrencyCard = () => {
           }}
         >
           <DropdownInput {...input} />
+          <div class="card-actions justify-end">
+            <button class="btn btn-primary">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+const ThemeCard = () => {
+  const { theme, setTheme } = getThemeContext();
+
+  const themeList = async () => {
+    return Object.values(availableThemes).map((theme) => ({
+      id: 1,
+      value: theme,
+    }));
+  };
+
+  return (
+    <div class="card w-full shadow-md border">
+      <div class="card-body">
+        <h2 class="card-title">Theme</h2>
+        <p class="text-sm opacity-50">
+          Select theme. You should press "save" button for saving between
+          sessions.
+        </p>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            saveThemeButton(theme());
+          }}
+        >
+          <DropdownSelect
+            input={{
+              type: inputType.DropdownSelect,
+              key: 'theme',
+              title: '',
+              placeholder: '',
+              required: true,
+              dataType: inputDataTypes.String,
+              fetchFunction: themeList,
+              value: { id: 1, value: theme() },
+              validationFunction: () => true,
+            }}
+            setter={(value: inputValue) => setTheme(value.value.toString())}
+          />
           <div class="card-actions justify-end">
             <button class="btn btn-primary">Save</button>
           </div>
