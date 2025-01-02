@@ -11,6 +11,9 @@ use commands::exchange_rates::{
     add_exchange_rate, delete_exchange_rate, get_exchange_rates, update_exchange_rate,
 };
 use commands::kv::{get_base_currency, get_theme, set_base_currency, set_theme};
+use commands::locations::{
+    add_location, delete_location, get_locations, update_location,
+};
 mod helpers;
 mod models;
 mod services;
@@ -42,16 +45,24 @@ pub async fn run() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
+            // exchange rates
             get_exchange_rates,
             add_exchange_rate,
             update_exchange_rate,
             delete_exchange_rate,
+            // assets
             get_assets,
             search_assets,
+            // settings
             get_base_currency,
             set_base_currency,
             get_theme,
             set_theme,
+            // locations
+            get_locations,
+            add_location,
+            update_location,
+            delete_location,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

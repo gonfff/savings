@@ -14,7 +14,6 @@ export const ModalProvider = (props: { children: JSX.Element }) => {
   const [isOpen, setIsOpen] = createSignal(false);
   const [currentData, setCurrentData] = createStore<ModalWindowProps>({
     inputs: [],
-    // setInputs: (inputs: inputValue[]) => {},
     isOpen: () => false,
     setIsOpen: () => {},
     title: '',

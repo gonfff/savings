@@ -3,6 +3,7 @@ pub mod exchange_rates;
 pub mod assets;
 
 pub mod kv;
+pub mod locations;
 
 use thiserror::Error;
 

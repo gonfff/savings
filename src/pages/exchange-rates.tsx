@@ -133,7 +133,6 @@ const ExchangeRateModal = () => {
   return (
     <ModalWindow
       inputs={currentData.inputs}
-      // setInputs={setInputs}
       isOpen={isOpen}
       setIsOpen={setIsOpen}
       title={currentData.title}

@@ -1,3 +1,5 @@
+import { ModalProvider } from '@/components/contexts/modal-window';
+import { ReloadProvider } from '@/components/contexts/reload';
 import { getThemeContext } from '@/components/contexts/theme';
 import { DropdownInput, DropdownSelect } from '@/components/inputs';
 import { SettingsCard } from '@/components/settings-card';
@@ -8,6 +10,7 @@ import {
   validateBaseCurrencyInput,
 } from '@/core/base-currency';
 import { saveThemeButton } from '@/core/themes';
+import { AddLocationButton, LocationsContent } from '@/pages/locations';
 import {
   inputDataTypes,
   InputProps,
@@ -20,46 +23,57 @@ import { createSignal, For, Match, onMount, Switch } from 'solid-js';
 import { createStore } from 'solid-js/store';
 
 const SettingsPage = () => {
+  const [selectedMenu, setSelectedMenu] = createSignal(
+    settingsMenuItems.General,
+  );
+
   return (
-    <div class="flex flex-col mr-3 mt-3 h-screen">
-      <SettingsHeader />
-      <SettingsContent />
-    </div>
+    <ReloadProvider>
+      <ModalProvider>
+        <div class="flex flex-col mr-3 mt-3 max-h-screen">
+          <SettingsHeader
+            selectedMenu={selectedMenu}
+            setSelectedMenu={setSelectedMenu}
+          />
+          <SettingsContent
+            selectedMenu={selectedMenu}
+            setSelectedMenu={setSelectedMenu}
+          />
+        </div>
+      </ModalProvider>
+    </ReloadProvider>
   );
 };
 
 export default SettingsPage;
 
-const SettingsHeader = () => {
+const SettingsHeader = (props: SettingsMenuProps) => {
   return (
     <div class="h-24 flex flex-col">
       <div class="flex flex-row flex-1 items-center">
         <h1 class="flex-1 text-2xl font-bold text-left">Settings</h1>
+        <HeaderButtons {...props} />
       </div>
       <div class="divider mt-1"></div>
     </div>
   );
 };
 
-const SettingsContent = () => {
-  const [selectedMenu, setSelectedMenu] = createSignal(
-    settingsMenuItems.General,
-  );
-
+const SettingsContent = (props: SettingsMenuProps) => {
   return (
     <div class="h-screen w-full grid grid-cols-[12rem_1fr]">
       <SettingsMenu
-        selectedMenu={selectedMenu}
-        setSelectedMenu={setSelectedMenu}
+        selectedMenu={props.selectedMenu}
+        setSelectedMenu={props.setSelectedMenu}
       />
       <Switch fallback={<div>Settings not found</div>}>
-        <Match when={selectedMenu() === settingsMenuItems.General}>
+        <Match when={props.selectedMenu() === settingsMenuItems.General}>
           <GeneralSettings />
         </Match>
-        <Match when={selectedMenu() === settingsMenuItems.Locations}>
+        <Match when={props.selectedMenu() === settingsMenuItems.Locations}>
           <LocationsSettings />
         </Match>
-        <Match when={selectedMenu() === settingsMenuItems.Appearance}>
+        <Match when={props.selectedMenu() === settingsMenuItems.Appearance}>
           <AppearanceSettings />
         </Match>
       </Switch>
@@ -97,7 +111,7 @@ const SettingsMenu = (props: SettingsMenuProps) => {
 
 const GeneralSettings = () => {
   return (
-    <div class="space-y-4">
+    <div class="space-y-4 overflow-y-auto">
       <BaseCurrencyCard />
     </div>
   );
@@ -105,8 +119,12 @@ const GeneralSettings = () => {
 
 const LocationsSettings = () => {
   return (
-    <div class="space-y-4">
-      <div class="bg-red-500">ХУЙХУЙХУЙ</div>
+    <div>
+      <p class="text-sm opacity-50">
+        The locations table stores information about the physical locations of
+        your accounts, such as Bybit, Binance, CityBank, and more.
+      </p>
+      <LocationsContent />
     </div>
   );
 };
@@ -118,6 +136,7 @@ const AppearanceSettings = () => {
     </div>
   );
 };
+
 const BaseCurrencyCard = () => {
   const [baseCurrency, setBaseCurrency] = createStore<inputValue>({
     id: 0,
@@ -202,5 +221,15 @@ const ThemeCard = () => {
         </div>
       </form>
     </SettingsCard>
+  );
+};
+
+const HeaderButtons = (props: SettingsMenuProps) => {
+  return (
+    <Switch fallback={<></>}>
+      <Match when={props.selectedMenu() === settingsMenuItems.Locations}>
+        <AddLocationButton />
+      </Match>
+    </Switch>
   );
 };

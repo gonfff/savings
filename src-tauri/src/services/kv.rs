@@ -28,7 +28,6 @@ impl<'a> KVService<'a> {
         Ok(result)
     }
 
-    /// Сериализовать значение и сохранить в хранилище
     pub async fn set_key<T>(&self, key: &str, value: &T) -> Result<(), ServiceError>
     where
         T: Serialize,

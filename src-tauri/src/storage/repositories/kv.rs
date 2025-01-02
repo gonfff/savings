@@ -15,7 +15,7 @@ impl KVRepository {
             .await;
 
         match res {
-            Ok((value, )) => Ok(value),
+            Ok((value,)) => Ok(value),
             Err(Error::RowNotFound) => Err(DatabaseError::NotFound(key.to_string())),
             Err(e) => Err(DatabaseError::Error(e.to_string())),
         }
@@ -31,7 +31,7 @@ impl KVRepository {
         sqlx::query(sql)
             .bind(key)
             .bind(value)
-            .execute(executor) // Используем &mut
+            .execute(executor)
             .await
             .map_err(|e| DatabaseError::Error(e.to_string()))?;
         Ok(())
