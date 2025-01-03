@@ -15,10 +15,10 @@ import { createEffect, createSignal, For } from 'solid-js';
 
 export const LocationsContent = () => {
   return (
-    <div class="flex flex-col mr-3 mt-3 h-screen">
+    <>
       <LocationsTable />
       <LocationsModal />
-    </div>
+    </>
   );
 };
 

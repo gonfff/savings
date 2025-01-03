@@ -20,7 +20,7 @@ const Main = () => {
 
   return (
     <div
-      class="h-screen overflow-hidden w-full h-screen grid grid-cols-[12rem_1fr]"
+      class="overflow-hidden w-screen h-screen grid grid-cols-[12rem_1fr]"
       data-theme={theme()}
     >
       <Sidebar routes={Routes} />

@@ -30,15 +30,17 @@ const SettingsPage = () => {
   return (
     <ReloadProvider>
       <ModalProvider>
-        <div class="flex flex-col mr-3 mt-3 max-h-screen">
+        <div class="flex flex-col mr-3 mt-3 h-screen">
           <SettingsHeader
             selectedMenu={selectedMenu}
             setSelectedMenu={setSelectedMenu}
           />
-          <SettingsContent
-            selectedMenu={selectedMenu}
-            setSelectedMenu={setSelectedMenu}
-          />
+          <div class="flex-1 overflow-hidden">
+            <SettingsContent
+              selectedMenu={selectedMenu}
+              setSelectedMenu={setSelectedMenu}
+            />
+          </div>
         </div>
       </ModalProvider>
     </ReloadProvider>
@@ -61,7 +63,7 @@ const SettingsHeader = (props: SettingsMenuProps) => {
 
 const SettingsContent = (props: SettingsMenuProps) => {
   return (
-    <div class="h-screen w-full grid grid-cols-[12rem_1fr]">
+    <div class="h-full grid grid-cols-[12rem_1fr]">
       <SettingsMenu
         selectedMenu={props.selectedMenu}
         setSelectedMenu={props.setSelectedMenu}
@@ -83,8 +85,8 @@ const SettingsContent = (props: SettingsMenuProps) => {
 
 const SettingsMenu = (props: SettingsMenuProps) => {
   return (
-    <div class="h-screen grid grid-cols-[11rem_1fr]">
-      <div class="menu flex">
+    <div class="h-full grid grid-cols-[11rem_1fr]">
+      <div class="menu">
         <ul>
           <For each={Object.values(settingsMenuItems)}>
             {(item) => (
@@ -111,15 +113,16 @@ const SettingsMenu = (props: SettingsMenuProps) => {
 
 const GeneralSettings = () => {
   return (
-    <div class="space-y-4 overflow-y-auto">
+    <div class="h-full space-y-4 overflow-y-auto">
       <BaseCurrencyCard />
+      <div></div> {/* Add this div to beautify end */}
     </div>
   );
 };
 
 const LocationsSettings = () => {
   return (
-    <div>
+    <div class="flex flex-col h-full overflow-hidden">
       <p class="text-sm opacity-50">
         The locations table stores information about the physical locations of
         your accounts, such as Bybit, Binance, CityBank, and more.
@@ -131,8 +134,9 @@ const LocationsSettings = () => {
 
 const AppearanceSettings = () => {
   return (
-    <div class="space-y-4">
+    <div class="h-full space-y-4 overflow-y-auto">
       <ThemeCard />
+      <div></div> {/* Add this div to beautify end */}
     </div>
   );
 };

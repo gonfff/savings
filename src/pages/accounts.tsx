@@ -29,7 +29,7 @@ const AccountsHeader = () => {
 
 const AccountsContent = () => {
   return (
-    <div class="h-screen w-full grid grid-cols-[12rem_1fr]">
+    <div class="h-full w-full grid grid-cols-[12rem_1fr]">
       <AccountsList />
       <AccountContent />
     </div>
@@ -48,7 +48,7 @@ const AccountsList = () => {
   ];
 
   return (
-    <div class="h-screen grid grid-cols-[11rem_1fr]">
+    <div class="h-full grid grid-cols-[11rem_1fr]">
       <div class="menu flex">
         <ul>
           <For each={accounts}>

@@ -50,7 +50,7 @@ export const PaginatedContainer = (
 
   // render children with container reference for scroll event
   return (
-    <div ref={container} class="overflow-y-auto h-full">
+    <div ref={container} class="overflow-y-auto flex-1">
       {props.children}
     </div>
   );
