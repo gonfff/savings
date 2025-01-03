@@ -1,4 +1,5 @@
 use crate::models::assets::AssetOut;
+use crate::models::assets::{AssetIn, AssetInsert};
 use crate::storage::DatabaseError;
 use sqlx::{Error, SqliteExecutor};
 
@@ -17,7 +18,7 @@ impl AssetsRepository {
                 type, \
                 name, \
                 created_at \
-            FROM assets 
+            FROM asset \
             ORDER BY id \
             LIMIT ? \
             OFFSET ?;";
@@ -30,6 +31,62 @@ impl AssetsRepository {
         match res {
             Ok(value) => Ok(value),
             Err(Error::RowNotFound) => Ok(vec![]),
+            Err(e) => Err(DatabaseError::Error(e.to_string())),
+        }
+    }
+
+    pub async fn add<'e>(
+        executor: impl SqliteExecutor<'e>,
+        asset: AssetInsert,
+    ) -> Result<(), DatabaseError> {
+        let sql = "\
+            INSERT INTO asset (code, type, name)\
+            VALUES (?, ?, ?);";
+        let res = sqlx::query(sql)
+            .bind(asset.code)
+            .bind(asset.type_)
+            .bind(asset.name)
+            .execute(executor)
+            .await;
+
+        res.map_err(|e| DatabaseError::Error(e.to_string()))
+            .map(|_| ())
+    }
+
+    pub async fn update<'e>(
+        executor: impl SqliteExecutor<'e>,
+        id: i32,
+        asset: AssetIn,
+    ) -> Result<(), DatabaseError> {
+        let sql = "\
+        UPDATE asset SET \
+            code = ?, \
+            type = ?, \
+            name = ? \
+        WHERE id = ?;";
+        let res = sqlx::query(sql)
+            .bind(asset.code)
+            .bind(asset.type_)
+            .bind(asset.name)
+            .bind(id)
+            .execute(executor)
+            .await;
+
+        match res {
+            Ok(_) => Ok(()),
+            Err(e) => Err(DatabaseError::Error(e.to_string())),
+        }
+    }
+
+    pub async fn delete<'e>(
+        executor: impl SqliteExecutor<'e>,
+        id: i32,
+    ) -> Result<(), DatabaseError> {
+        let sql = "DELETE FROM asset WHERE id = ?;";
+        let res = sqlx::query(sql).bind(id).execute(executor).await;
+
+        match res {
+            Ok(_) => Ok(()),
             Err(e) => Err(DatabaseError::Error(e.to_string())),
         }
     }

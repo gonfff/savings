@@ -6,7 +6,7 @@ use tauri::Manager;
 use tokio::task::block_in_place;
 
 mod commands;
-use commands::assets::{get_assets, search_assets};
+use commands::assets::{add_asset, delete_asset, get_assets, search_assets, update_asset};
 use commands::exchange_rates::{
     add_exchange_rate, delete_exchange_rate, get_exchange_rates, update_exchange_rate,
 };
@@ -52,6 +52,9 @@ pub async fn run() {
             delete_exchange_rate,
             // assets
             get_assets,
+            add_asset,
+            update_asset,
+            delete_asset,
             search_assets,
             // settings
             get_base_currency,

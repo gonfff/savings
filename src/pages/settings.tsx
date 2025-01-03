@@ -21,6 +21,7 @@ import { settingsMenuItems, SettingsMenuProps } from '@/types/settings';
 import { availableThemes } from '@/types/themes';
 import { createSignal, For, Match, onMount, Switch } from 'solid-js';
 import { createStore } from 'solid-js/store';
+import { AddAssetButton, AssetsContent } from './assets';
 
 const SettingsPage = () => {
   const [selectedMenu, setSelectedMenu] = createSignal(
@@ -78,6 +79,9 @@ const SettingsContent = (props: SettingsMenuProps) => {
         <Match when={props.selectedMenu() === settingsMenuItems.Appearance}>
           <AppearanceSettings />
         </Match>
+        <Match when={props.selectedMenu() === settingsMenuItems.Assets}>
+          <AssetsSettings />
+        </Match>
       </Switch>
     </div>
   );
@@ -128,6 +132,18 @@ const LocationsSettings = () => {
         your accounts, such as Bybit, Binance, CityBank, and more.
       </p>
       <LocationsContent />
+    </div>
+  );
+};
+
+const AssetsSettings = () => {
+  return (
+    <div class="flex flex-col h-full overflow-hidden">
+      <p class="text-sm opacity-50">
+        The assets table stores information about assets you own, such as BTC,
+        ETH, USD, AAPL and more.
+      </p>
+      <AssetsContent />
     </div>
   );
 };
@@ -233,6 +249,9 @@ const HeaderButtons = (props: SettingsMenuProps) => {
     <Switch fallback={<></>}>
       <Match when={props.selectedMenu() === settingsMenuItems.Locations}>
         <AddLocationButton />
+      </Match>
+      <Match when={props.selectedMenu() === settingsMenuItems.Assets}>
+        <AddAssetButton />
       </Match>
     </Switch>
   );

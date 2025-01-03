@@ -4,35 +4,35 @@ import { getReloadContext } from '@/components/contexts/reload';
 import { ModalWindow } from '@/components/modal-window';
 import { PaginatedContainer } from '@/components/pagination';
 import {
-  addLocationButtonAction,
-  deleteLocation,
-  editLocationButtonAction,
-  fetchLocations,
-} from '@/core/locations';
+  addAssetButtonAction,
+  deleteAsset,
+  editAssetButtonAction,
+  fetchAssets,
+} from '@/core/assets';
+import { Asset } from '@/types/assets';
 import { Input, inputDataTypes, inputType } from '@/types/inputs';
-import { Location } from '@/types/locations';
 import { createEffect, createSignal, For } from 'solid-js';
 
-export const LocationsContent = () => {
+export const AssetsContent = () => {
   return (
     <>
-      <LocationsTable />
-      <LocationsModal />
+      <AssetsTable />
+      <AssetsModal />
     </>
   );
 };
 
-const LocationsTable = () => {
-  const [locations, setLocations] = createSignal<Location[] | null>(null);
+const AssetsTable = () => {
+  const [assets, setAssets] = createSignal<Asset[] | null>(null);
 
   const limit = 20;
   const [offset, setOffset] = createSignal<number>(0);
 
-  // event and effect for reloading the page after adding a new location
+  // event and effect for reloading the page after adding a new asset
   const { reload, setReload } = getReloadContext();
   createEffect(() => {
     if (reload()) {
-      setLocations(null);
+      setAssets(null);
       setOffset(0);
       setReload(false);
     }
@@ -43,22 +43,23 @@ const LocationsTable = () => {
       limit={limit}
       offset={offset}
       setOffset={setOffset}
-      items={locations}
-      setItems={setLocations}
-      fetchFunction={fetchLocations}
+      items={assets}
+      setItems={setAssets}
+      fetchFunction={fetchAssets}
     >
       <table class="table table-zebra">
         <thead class="sticky top-0 z-10 bg-base-100">
           <tr>
             <th>ID</th>
+            <th>Code</th>
+            <th>Type</th>
             <th>Name</th>
-            <th>Description</th>
             <th></th>
           </tr>
         </thead>
         <tbody class="h-full">
-          <For each={locations() ?? []} fallback={<></>}>
-            {(location) => <LocationsRow location={location} />}
+          <For each={assets() ?? []} fallback={<></>}>
+            {(asset) => <AssetsRow asset={asset} />}
           </For>
         </tbody>
       </table>
@@ -66,29 +67,30 @@ const LocationsTable = () => {
   );
 };
 
-const LocationsRow = ({ location }: { location: Location }) => {
+const AssetsRow = ({ asset }: { asset: Asset }) => {
   const { setReload } = getReloadContext();
   const { isOpen, setIsOpen, setCurrentData } = getModalContext();
 
   return (
     <tr>
-      <td>{location.id}</td>
-      <td>{location.name}</td>
-      <td>{location.description}</td>
+      <td>{asset.id}</td>
+      <td>{asset.code}</td>
+      <td>{asset.type}</td>
+      <td>{asset.name}</td>
       <td>
         <TableRowButton
           editFunc={() => {
             setCurrentData({
-              inputs: locationsFormInputs(location),
+              inputs: assetsFormInputs(asset),
               isOpen: isOpen,
               setIsOpen: setIsOpen,
-              title: 'Edit Location',
-              actionButton: editLocationButtonAction(location.id, setReload),
+              title: 'Edit Asset',
+              actionButton: editAssetButtonAction(asset.id, setReload),
             });
             setIsOpen(true);
           }}
           deleteFunc={() => {
-            deleteLocation(location.id);
+            deleteAsset(asset.id);
             setReload(true);
           }}
         />
@@ -97,7 +99,7 @@ const LocationsRow = ({ location }: { location: Location }) => {
   );
 };
 
-export const LocationsModal = () => {
+export const AssetsModal = () => {
   const { isOpen, setIsOpen, currentData } = getModalContext();
   console.log(currentData);
   return (
@@ -112,7 +114,7 @@ export const LocationsModal = () => {
   );
 };
 
-export const AddLocationButton = () => {
+export const AddAssetButton = () => {
   const { isOpen, setIsOpen, setCurrentData } = getModalContext();
   const { setReload } = getReloadContext();
 
@@ -121,42 +123,48 @@ export const AddLocationButton = () => {
       class="btn btn-primary"
       onClick={() => {
         setCurrentData({
-          inputs: locationsFormInputs(),
+          inputs: assetsFormInputs(),
           isOpen: isOpen,
           setIsOpen: setIsOpen,
-          title: 'Add Exchange Location',
-          comment: 'Dont forget to add assets first',
-          actionButton: addLocationButtonAction(setReload),
+          title: 'Add Asset',
+          actionButton: addAssetButtonAction(setReload),
         });
         setIsOpen(true);
       }}
     >
-      Add location
+      Add asset
     </button>
   );
 };
 
-const locationsFormInputs = (location?: Location): Input[] => {
+const assetsFormInputs = (asset?: Asset): Input[] => {
   return [
+    {
+      type: inputType.StringInput,
+      key: 'code',
+      title: 'Code',
+      placeholder: 'USDT',
+      required: true,
+      dataType: inputDataTypes.String,
+      value: asset ? { id: 0, value: asset.code } : { id: 0, value: '' },
+    },
+    {
+      type: inputType.StringInput,
+      key: 'type',
+      title: 'Type',
+      placeholder: 'Crypto',
+      required: true,
+      dataType: inputDataTypes.String,
+      value: asset ? { id: 0, value: asset.type } : { id: 0, value: '' },
+    },
     {
       type: inputType.StringInput,
       key: 'name',
       title: 'Name',
-      placeholder: 'Ziraat bankasi',
+      placeholder: 'Tether USD stablecoin',
       required: true,
       dataType: inputDataTypes.String,
-      value: location ? { id: 0, value: location.name } : { id: 0, value: '' },
-    },
-    {
-      type: inputType.StringInput,
-      key: 'description',
-      title: 'Description',
-      placeholder: 'My turkish bank',
-      required: true,
-      dataType: inputDataTypes.String,
-      value: location
-        ? { id: 0, value: location.description }
-        : { id: 0, value: '' },
+      value: asset ? { id: 0, value: asset.name } : { id: 0, value: '' },
     },
   ];
 };
