@@ -69,7 +69,8 @@ const AssetsTable = () => {
 
 const AssetsRow = ({ asset }: { asset: Asset }) => {
   const { setReload } = getReloadContext();
-  const { isOpen, setIsOpen, setCurrentData } = getModalContext();
+  const { isOpen, setIsOpen, setCurrentData, clearCurrentData } =
+    getModalContext();
 
   return (
     <tr>
@@ -80,6 +81,7 @@ const AssetsRow = ({ asset }: { asset: Asset }) => {
       <td>
         <TableRowButton
           editFunc={() => {
+            clearCurrentData();
             setCurrentData({
               inputs: assetsFormInputs(asset),
               isOpen: isOpen,
@@ -101,7 +103,7 @@ const AssetsRow = ({ asset }: { asset: Asset }) => {
 
 export const AssetsModal = () => {
   const { isOpen, setIsOpen, currentData } = getModalContext();
-  console.log(currentData);
+
   return (
     <ModalWindow
       inputs={currentData.inputs}
@@ -115,13 +117,15 @@ export const AssetsModal = () => {
 };
 
 export const AddAssetButton = () => {
-  const { isOpen, setIsOpen, setCurrentData } = getModalContext();
+  const { isOpen, setIsOpen, setCurrentData, clearCurrentData } =
+    getModalContext();
   const { setReload } = getReloadContext();
 
   return (
     <button
       class="btn btn-primary"
       onClick={() => {
+        clearCurrentData();
         setCurrentData({
           inputs: assetsFormInputs(),
           isOpen: isOpen,

@@ -1,7 +1,7 @@
 import { addToast } from '@/core/toasts';
+import { Asset, AssetRequest } from '@/types/assets';
 import { PaginatedResponse } from '@/types/base';
 import { inputValue } from '@/types/inputs';
-import { Asset, AssetRequest } from '@/types/assets';
 import { ToastStyle } from '@/types/toasts';
 import { invoke } from '@tauri-apps/api/core';
 
@@ -55,6 +55,7 @@ export const addAssetButtonAction = (
   setReload: (value: boolean) => void,
 ): ((formData: Record<string, inputValue>) => Promise<void>) => {
   return async (formData: Record<string, inputValue>) => {
+    console.log('Add asset', formData);
     const AssetRequest: AssetRequest = {
       code: formData.description.value.toString(),
       type: formData.type.value.toString(),

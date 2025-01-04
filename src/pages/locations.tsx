@@ -68,7 +68,8 @@ const LocationsTable = () => {
 
 const LocationsRow = ({ location }: { location: Location }) => {
   const { setReload } = getReloadContext();
-  const { isOpen, setIsOpen, setCurrentData } = getModalContext();
+  const { isOpen, setIsOpen, setCurrentData, clearCurrentData } =
+    getModalContext();
 
   return (
     <tr>
@@ -78,6 +79,7 @@ const LocationsRow = ({ location }: { location: Location }) => {
       <td>
         <TableRowButton
           editFunc={() => {
+            clearCurrentData();
             setCurrentData({
               inputs: locationsFormInputs(location),
               isOpen: isOpen,
@@ -99,7 +101,7 @@ const LocationsRow = ({ location }: { location: Location }) => {
 
 export const LocationsModal = () => {
   const { isOpen, setIsOpen, currentData } = getModalContext();
-  console.log(currentData);
+
   return (
     <ModalWindow
       inputs={currentData.inputs}
@@ -113,19 +115,20 @@ export const LocationsModal = () => {
 };
 
 export const AddLocationButton = () => {
-  const { isOpen, setIsOpen, setCurrentData } = getModalContext();
+  const { isOpen, setIsOpen, setCurrentData, clearCurrentData } =
+    getModalContext();
   const { setReload } = getReloadContext();
 
   return (
     <button
       class="btn btn-primary"
       onClick={() => {
+        clearCurrentData();
         setCurrentData({
           inputs: locationsFormInputs(),
           isOpen: isOpen,
           setIsOpen: setIsOpen,
-          title: 'Add Exchange Location',
-          comment: 'Dont forget to add assets first',
+          title: 'Add Location',
           actionButton: addLocationButtonAction(setReload),
         });
         setIsOpen(true);

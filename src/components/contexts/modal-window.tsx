@@ -8,6 +8,7 @@ const ModalContext = createContext<{
   setIsOpen: (value: boolean) => void;
   currentData: ModalWindowProps;
   setCurrentData: (data: Partial<ModalWindowProps>) => void;
+  clearCurrentData: () => void;
 }>();
 
 export const ModalProvider = (props: { children: JSX.Element }) => {
@@ -21,9 +22,28 @@ export const ModalProvider = (props: { children: JSX.Element }) => {
     actionButton: () => {},
   });
 
+  const clearCurrentData = () => {
+    setTimeout(() => {
+      setCurrentData(() => ({
+        inputs: [],
+        isOpen: () => false,
+        setIsOpen: () => {},
+        title: '',
+        comment: '',
+        actionButton: () => {},
+      }));
+    }, 0);
+  };
+
   return (
     <ModalContext.Provider
-      value={{ isOpen, setIsOpen, currentData, setCurrentData }}
+      value={{
+        isOpen,
+        setIsOpen,
+        currentData,
+        setCurrentData,
+        clearCurrentData,
+      }}
     >
       {props.children}
     </ModalContext.Provider>
@@ -35,6 +55,7 @@ export const getModalContext = (): {
   setIsOpen: (value: boolean) => void;
   currentData: ModalWindowProps;
   setCurrentData: (data: Partial<ModalWindowProps>) => void;
+  clearCurrentData: () => void;
 } => {
   const context = useContext(ModalContext);
   if (!context) {
