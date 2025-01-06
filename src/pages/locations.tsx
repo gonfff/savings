@@ -1,5 +1,8 @@
 import { TableRowButton } from '@/components/buttons';
-import { getModalContext } from '@/components/contexts/modal-window';
+import {
+  getModalContext,
+  ModalProvider,
+} from '@/components/contexts/modal-window';
 import { getReloadContext } from '@/components/contexts/reload';
 import { ModalWindow } from '@/components/modal-window';
 import { PaginatedContainer } from '@/components/pagination';
@@ -15,10 +18,10 @@ import { createEffect, createSignal, For } from 'solid-js';
 
 export const LocationsContent = () => {
   return (
-    <>
+    <ModalProvider>
       <LocationsTable />
       <LocationsModal />
-    </>
+    </ModalProvider>
   );
 };
 
@@ -68,8 +71,7 @@ const LocationsTable = () => {
 
 const LocationsRow = ({ location }: { location: Location }) => {
   const { setReload } = getReloadContext();
-  const { isOpen, setIsOpen, setCurrentData, clearCurrentData } =
-    getModalContext();
+  const { isOpen, setIsOpen, setCurrentData } = getModalContext();
 
   return (
     <tr>
@@ -79,7 +81,6 @@ const LocationsRow = ({ location }: { location: Location }) => {
       <td>
         <TableRowButton
           editFunc={() => {
-            clearCurrentData();
             setCurrentData({
               inputs: locationsFormInputs(location),
               isOpen: isOpen,
@@ -115,15 +116,22 @@ export const LocationsModal = () => {
 };
 
 export const AddLocationButton = () => {
-  const { isOpen, setIsOpen, setCurrentData, clearCurrentData } =
-    getModalContext();
+  return (
+    <ModalProvider>
+      <_AddLocationButton />
+      <LocationsModal />
+    </ModalProvider>
+  );
+};
+
+const _AddLocationButton = () => {
+  const { isOpen, setIsOpen, setCurrentData } = getModalContext();
   const { setReload } = getReloadContext();
 
   return (
     <button
       class="btn btn-primary"
       onClick={() => {
-        clearCurrentData();
         setCurrentData({
           inputs: locationsFormInputs(),
           isOpen: isOpen,

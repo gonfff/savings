@@ -1,5 +1,8 @@
 import { TableRowButton } from '@/components/buttons';
-import { getModalContext } from '@/components/contexts/modal-window';
+import {
+  getModalContext,
+  ModalProvider,
+} from '@/components/contexts/modal-window';
 import { getReloadContext } from '@/components/contexts/reload';
 import { ModalWindow } from '@/components/modal-window';
 import { PaginatedContainer } from '@/components/pagination';
@@ -15,10 +18,10 @@ import { createEffect, createSignal, For } from 'solid-js';
 
 export const AssetsContent = () => {
   return (
-    <>
+    <ModalProvider>
       <AssetsTable />
       <AssetsModal />
-    </>
+    </ModalProvider>
   );
 };
 
@@ -69,8 +72,7 @@ const AssetsTable = () => {
 
 const AssetsRow = ({ asset }: { asset: Asset }) => {
   const { setReload } = getReloadContext();
-  const { isOpen, setIsOpen, setCurrentData, clearCurrentData } =
-    getModalContext();
+  const { isOpen, setIsOpen, setCurrentData } = getModalContext();
 
   return (
     <tr>
@@ -81,7 +83,6 @@ const AssetsRow = ({ asset }: { asset: Asset }) => {
       <td>
         <TableRowButton
           editFunc={() => {
-            clearCurrentData();
             setCurrentData({
               inputs: assetsFormInputs(asset),
               isOpen: isOpen,
@@ -117,15 +118,21 @@ export const AssetsModal = () => {
 };
 
 export const AddAssetButton = () => {
-  const { isOpen, setIsOpen, setCurrentData, clearCurrentData } =
-    getModalContext();
+  return (
+    <ModalProvider>
+      <_AddAssetButton />
+      <AssetsModal />
+    </ModalProvider>
+  );
+};
+const _AddAssetButton = () => {
+  const { isOpen, setIsOpen, setCurrentData } = getModalContext();
   const { setReload } = getReloadContext();
 
   return (
     <button
       class="btn btn-primary"
       onClick={() => {
-        clearCurrentData();
         setCurrentData({
           inputs: assetsFormInputs(),
           isOpen: isOpen,

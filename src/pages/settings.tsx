@@ -1,4 +1,3 @@
-import { ModalProvider } from '@/components/contexts/modal-window';
 import { ReloadProvider } from '@/components/contexts/reload';
 import { getThemeContext } from '@/components/contexts/theme';
 import { DropdownInput, DropdownSelect } from '@/components/inputs';
@@ -30,20 +29,18 @@ const SettingsPage = () => {
 
   return (
     <ReloadProvider>
-      <ModalProvider>
-        <div class="flex flex-col mr-3 mt-3 h-screen">
-          <SettingsHeader
+      <div class="flex flex-col mr-3 mt-3 h-screen">
+        <SettingsHeader
+          selectedMenu={selectedMenu}
+          setSelectedMenu={setSelectedMenu}
+        />
+        <div class="flex-1 overflow-hidden">
+          <SettingsContent
             selectedMenu={selectedMenu}
             setSelectedMenu={setSelectedMenu}
           />
-          <div class="flex-1 overflow-hidden">
-            <SettingsContent
-              selectedMenu={selectedMenu}
-              setSelectedMenu={setSelectedMenu}
-            />
-          </div>
         </div>
-      </ModalProvider>
+      </div>
     </ReloadProvider>
   );
 };

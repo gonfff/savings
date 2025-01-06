@@ -57,7 +57,7 @@ export const addAssetButtonAction = (
   return async (formData: Record<string, inputValue>) => {
     console.log('Add asset', formData);
     const AssetRequest: AssetRequest = {
-      code: formData.description.value.toString(),
+      code: formData.code.value.toString(),
       type: formData.type.value.toString(),
       name: formData.name.value.toString(),
     };
@@ -88,7 +88,7 @@ export const editAssetButtonAction = (
     console.log('Edit asset', id, formData);
 
     const AssetRequest: AssetRequest = {
-      code: formData.description.value.toString(),
+      code: formData.code.value.toString(),
       type: formData.type.value.toString(),
       name: formData.name.value.toString(),
     };
