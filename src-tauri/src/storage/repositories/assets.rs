@@ -19,7 +19,7 @@ impl AssetsRepository {
                 name, \
                 created_at \
             FROM asset \
-            ORDER BY created_at, id \
+            ORDER BY created_at DESC, id DESC \
             LIMIT ? \
             OFFSET ?;";
         let res = sqlx::query_as::<_, AssetOut>(sql)
