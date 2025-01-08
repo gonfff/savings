@@ -78,11 +78,58 @@ const AccountsList = () => {
 };
 
 const AccountContent = () => {
+  const [selectedMenu, setSelectedMenu] = createSignal('All');
   return (
-    <div class="flex flex-col">
-      <div class="h-60 w-full content-center items-center text-center border">
-        <p>chart here</p>
+    <div class="flex flex-col items-center">
+      <div class="h-80 w-full flex flex-col justify-between border">
+        <div class="h-full w-full text-center content-center items-center">
+          <p>chart here</p>
+        </div>
+
+        <div class="flex flex-row justify-center w-full menu menu-xs">
+          <li>
+            <a
+              class={`rounded-none menu-item ${
+                selectedMenu() === '1w' ? 'active' : ''
+              }`}
+              onClick={() => {}}
+            >
+              1w
+            </a>
+          </li>
+          <li>
+            <a
+              class={`rounded-none menu-item  ${
+                selectedMenu() === '1m' ? 'active' : ''
+              }`}
+              onClick={() => {}}
+            >
+              1m
+            </a>
+          </li>
+          <li>
+            <a
+              class={`rounded-none menu-item ${
+                selectedMenu() === '1y' ? 'active' : ''
+              }`}
+              onClick={() => {}}
+            >
+              1y
+            </a>
+          </li>
+          <li>
+            <a
+              class={`rounded-none menu-item ${
+                selectedMenu() === 'All' ? 'active' : ''
+              }`}
+              onClick={() => {}}
+            >
+              All
+            </a>
+          </li>
+        </div>
       </div>
+
       <table class="table table-zebra">
         <thead>
           <tr>

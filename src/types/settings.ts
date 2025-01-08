@@ -5,6 +5,7 @@ export enum settingsMenuItems {
   Locations = 'Locations',
   Assets = 'Assets',
   Appearance = 'Appearance',
+  Creds = 'Creds & Support',
 }
 
 export interface SettingsMenuProps {

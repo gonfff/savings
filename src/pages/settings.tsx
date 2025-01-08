@@ -18,6 +18,7 @@ import {
 } from '@/types/inputs';
 import { settingsMenuItems, SettingsMenuProps } from '@/types/settings';
 import { availableThemes } from '@/types/themes';
+import { open } from '@tauri-apps/plugin-shell';
 import { createSignal, For, Match, onMount, Switch } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { AddAssetButton, AssetsContent } from './assets';
@@ -78,6 +79,9 @@ const SettingsContent = (props: SettingsMenuProps) => {
         </Match>
         <Match when={props.selectedMenu() === settingsMenuItems.Assets}>
           <AssetsSettings />
+        </Match>
+        <Match when={props.selectedMenu() === settingsMenuItems.Creds}>
+          <SupportSettings />
         </Match>
       </Switch>
     </div>
@@ -149,6 +153,15 @@ const AppearanceSettings = () => {
   return (
     <div class="h-full space-y-4 overflow-y-auto">
       <ThemeCard />
+      <div></div> {/* Add this div to beautify end */}
+    </div>
+  );
+};
+
+const SupportSettings = () => {
+  return (
+    <div class="h-full space-y-4 overflow-y-auto">
+      <SupportCard />
       <div></div> {/* Add this div to beautify end */}
     </div>
   );
@@ -237,6 +250,22 @@ const ThemeCard = () => {
           <button class="btn btn-primary">Save</button>
         </div>
       </form>
+    </SettingsCard>
+  );
+};
+
+const SupportCard = () => {
+  const openLink = async () => {
+    await open('https://gonfff.github.io');
+  };
+
+  return (
+    <SettingsCard title="Creds & Support" description="">
+      <div class="flex mt-auto my-4 justify-center items-center">
+        <div class="btn btn-primary w-40" onClick={openLink}>
+          Open creds page
+        </div>
+      </div>
     </SettingsCard>
   );
 };

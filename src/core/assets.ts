@@ -55,7 +55,6 @@ export const addAssetButtonAction = (
   setReload: (value: boolean) => void,
 ): ((formData: Record<string, inputValue>) => Promise<void>) => {
   return async (formData: Record<string, inputValue>) => {
-    console.log('Add asset', formData);
     const AssetRequest: AssetRequest = {
       code: formData.code.value.toString(),
       type: formData.type.value.toString(),
@@ -85,8 +84,6 @@ export const editAssetButtonAction = (
   setReload: (value: boolean) => void,
 ): ((formData: Record<string, inputValue>) => Promise<void>) => {
   return async (formData: Record<string, inputValue>) => {
-    console.log('Edit asset', id, formData);
-
     const AssetRequest: AssetRequest = {
       code: formData.code.value.toString(),
       type: formData.type.value.toString(),
