@@ -10,7 +10,7 @@ export const Routes: menuRoute[] = [
   {
     name: 'Accounts',
     path: '/accounts',
-    component: lazy(() => import('@/pages/accounts')),
+    component: lazy(() => import('@/pages/accounts/page')),
   },
   {
     name: 'Exchange Rates',

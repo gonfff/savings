@@ -3,6 +3,7 @@ pub mod exchange_rates;
 pub mod base;
 pub mod assets;
 pub mod locations;
+pub mod accounts;
 
 pub use base::PaginatedResponse;
 pub use kv::{BaseCurrency, SettingKey};

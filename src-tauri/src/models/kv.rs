@@ -5,6 +5,7 @@ pub enum SettingKey {
     BaseCurrency,
     Theme,
     UseExternalApi,
+    Environment,
 }
 
 impl SettingKey {
@@ -13,6 +14,7 @@ impl SettingKey {
             SettingKey::BaseCurrency => "base_currency",
             SettingKey::UseExternalApi => "use_external_api",
             SettingKey::Theme => "theme",
+            SettingKey::Environment => "environment"
         }
     }
 }

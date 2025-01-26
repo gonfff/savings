@@ -4,6 +4,7 @@ pub mod assets;
 
 pub mod kv;
 pub mod locations;
+pub mod accounts;
 
 use thiserror::Error;
 

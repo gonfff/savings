@@ -23,4 +23,17 @@ html {
     appearance: none;
     -moz-appearance: textfield;
   }
+
+  .fade-text {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+
+    -webkit-mask-image: linear-gradient(to left, transparent, black 20%);
+    mask-image: linear-gradient(to left, transparent, black 20%);
+
+    -webkit-mask-composite: destination-in;
+    mask-composite: intersect;
+    max-width: 100%;
+  }
 }

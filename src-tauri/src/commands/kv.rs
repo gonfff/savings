@@ -43,3 +43,14 @@ pub async fn set_theme(
     svc.set_key(SettingKey::Theme.as_str(), &value).await?;
     Ok(())
 }
+
+
+#[command]
+pub async fn get_env(state: tauri::State<'_, AppState>) -> Result<String, CommandsError> {
+    let svc = KVService::new(&state);
+    let result: Result<String, _> = svc.get_key(SettingKey::Environment.as_str()).await;
+    match result {
+        Ok(env) => Ok(env),
+        Err(_) => Ok("production".to_string()),
+    }
+}

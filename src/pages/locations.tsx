@@ -163,7 +163,7 @@ const locationsFormInputs = (location?: Location): Input[] => {
       key: 'description',
       title: 'Description',
       placeholder: 'My turkish bank',
-      required: true,
+      required: false,
       dataType: inputDataTypes.String,
       value: location
         ? { id: 0, value: location.description }

@@ -1,7 +1,8 @@
 pub mod assets;
-pub mod exchannge_rates;
+pub mod exchange_rates;
 pub mod kv;
 pub mod locations;
+pub mod accounts;
 
 use thiserror::Error;
 

@@ -20,6 +20,7 @@ pub struct AppState {
 
 impl AppState {
     pub async fn new(app_dir: PathBuf) -> Result<Self, AppError> {
+        // TODO think about it, maybe it should be removed
         let db = Database::new(app_dir.clone())
             .await
             .map_err(|e| AppError::StateError(format!("Error while connect to DB: {}", e)))?;

@@ -6,20 +6,22 @@ use tauri::Manager;
 use tokio::task::block_in_place;
 
 mod commands;
+use commands::accounts::{
+    add_account, delete_account, get_accounts, get_accounts_by, update_account,
+};
 use commands::assets::{add_asset, delete_asset, get_assets, search_assets, update_asset};
 use commands::exchange_rates::{
     add_exchange_rate, delete_exchange_rate, get_exchange_rates, update_exchange_rate,
 };
 use commands::kv::{get_base_currency, get_theme, set_base_currency, set_theme};
-use commands::locations::{
-    add_location, delete_location, get_locations, update_location,
-};
+use commands::locations::{add_location, delete_location, get_locations, update_location};
 mod helpers;
 mod models;
 mod services;
 mod state;
 mod storage;
 
+use crate::commands::kv::get_env;
 use crate::state::AppState;
 use thiserror::Error;
 
@@ -61,11 +63,18 @@ pub async fn run() {
             set_base_currency,
             get_theme,
             set_theme,
+            get_env,
             // locations
             get_locations,
             add_location,
             update_location,
             delete_location,
+            // accounts
+            get_accounts,
+            add_account,
+            update_account,
+            delete_account,
+            get_accounts_by,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

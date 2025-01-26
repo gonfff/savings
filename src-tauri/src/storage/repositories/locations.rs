@@ -17,7 +17,7 @@ impl LocationsRepository {
                 description, \
                 created_at \
             FROM location \
-            ORDER BY created_at DESC, id DESC \
+            ORDER BY name \
             LIMIT ? \
             OFFSET ?;";
         let res = sqlx::query_as::<_, LocationOut>(sql)
