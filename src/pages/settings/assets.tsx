@@ -16,7 +16,19 @@ import { Asset } from '@/types/assets';
 import { Input, inputDataTypes, inputType } from '@/types/inputs';
 import { createEffect, createSignal, For } from 'solid-js';
 
-export const AssetsContent = () => {
+export const AssetsPage = () => {
+  return (
+    <div class="flex flex-col h-full overflow-hidden">
+      <p class="text-sm opacity-50">
+        The assets table stores information about assets you own, such as BTC,
+        ETH, USD, AAPL and more.
+      </p>
+      <AssetsContent />
+    </div>
+  );
+};
+
+const AssetsContent = () => {
   return (
     <ModalProvider>
       <AssetsTable />

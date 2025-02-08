@@ -20,6 +20,6 @@ export const Routes: menuRoute[] = [
   {
     name: 'Settings',
     path: '/settings',
-    component: lazy(() => import('@/pages/settings')),
+    component: lazy(() => import('@/pages/settings/page')),
   },
 ];

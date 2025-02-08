@@ -12,12 +12,23 @@ import {
   editLocationButtonAction,
   fetchLocations,
 } from '@/core/locations';
-import { addToast } from '@/core/toasts';
 import { Input, inputDataTypes, inputType } from '@/types/inputs';
 import { Location } from '@/types/locations';
 import { createEffect, createSignal, For } from 'solid-js';
 
-export const LocationsContent = () => {
+export const LocationsPage = () => {
+  return (
+    <div class="flex flex-col h-full overflow-hidden">
+      <p class="text-sm opacity-50">
+        The locations table stores information about the physical locations of
+        your accounts, such as Bybit, Binance, CityBank, and more.
+      </p>
+      <LocationsContent />
+    </div>
+  );
+};
+
+const LocationsContent = () => {
   return (
     <ModalProvider>
       <LocationsTable />
