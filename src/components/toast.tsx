@@ -20,7 +20,7 @@ const Toast = (props: ToastProps) => {
           <span class="font-bold">{props.title}</span>
           <Show when={props.description} fallback={<></>}>
             <br />
-            <span class="text-sm">
+            <span class="text-sm fade-text">
               {trimStringOverflow(props.description!, 25)}
             </span>
           </Show>

@@ -12,6 +12,7 @@ import {
   editLocationButtonAction,
   fetchLocations,
 } from '@/core/locations';
+import { addToast } from '@/core/toasts';
 import { Input, inputDataTypes, inputType } from '@/types/inputs';
 import { Location } from '@/types/locations';
 import { createEffect, createSignal, For } from 'solid-js';

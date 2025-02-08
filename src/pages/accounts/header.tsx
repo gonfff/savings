@@ -1,3 +1,5 @@
+import { TableRowButton } from '@/components/buttons';
+
 export const AccountsPageHeader = () => {
   return (
     <div class="h-24 flex flex-col">
@@ -6,6 +8,7 @@ export const AccountsPageHeader = () => {
         <div class="space-x-2">
           <AddTransactionButton />
           <AddAccountButton />
+          <AddBurgerButton />
         </div>
       </div>
       <div class="divider mt-1"></div>
@@ -19,4 +22,8 @@ const AddTransactionButton = () => {
 
 const AddAccountButton = () => {
   return <button class="btn btn-primary">Add Account</button>;
+};
+
+const AddBurgerButton = () => {
+  return <TableRowButton editFunc={() => {}} deleteFunc={() => {}} />;
 };

@@ -20,21 +20,27 @@ export const TableRowButton = (props: TableRowButtonProps) => {
           <path d="M5 11.5H19V13H5V11.5Z" fill="#1F2328" />
         </svg>
       </div>
-      <ul
-        tabindex="0"
-        class="dropdown-content menu bg-base-100 z-[1] w-32 p-2 shadow"
-      >
-        <li>
-          <a class="rounded-none" onClick={props.editFunc}>
-            Edit
-          </a>
-        </li>
-        <li>
-          <a class="rounded-none" onClick={props.deleteFunc}>
-            Delete
-          </a>
-        </li>
-      </ul>
+      <ContextMenu editFunc={props.editFunc} deleteFunc={props.deleteFunc} />
     </div>
+  );
+};
+
+const ContextMenu = (props: TableRowButtonProps) => {
+  return (
+    <ul
+      tabindex="0"
+      class="dropdown-content menu bg-base-100 z-[1] w-32 p-2 shadow"
+    >
+      <li>
+        <a class="rounded-none" onClick={props.editFunc}>
+          Edit
+        </a>
+      </li>
+      <li>
+        <a class="rounded-none" onClick={props.deleteFunc}>
+          Delete
+        </a>
+      </li>
+    </ul>
   );
 };

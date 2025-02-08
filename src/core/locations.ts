@@ -24,8 +24,17 @@ export const addLocation = async (location: LocationRequest): Promise<null> => {
 };
 
 export const deleteLocation = async (id: number): Promise<null> => {
-  await invoke<null>('delete_location', { id });
-  return null;
+  try {
+    await invoke<null>('delete_location', { id });
+    return null;
+  } catch (error) {
+    addToast({
+      title: 'Failed',
+      description: (error as Error).toString(),
+      style: ToastStyle.Error,
+    });
+    return null;
+  }
 };
 
 export const updateLocation = async (
