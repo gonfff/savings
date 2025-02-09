@@ -84,4 +84,30 @@ impl LocationsRepository {
             Err(e) => Err(DatabaseError::Error(e.to_string())),
         }
     }
+
+    pub async fn search<'e>(
+        executor: impl SqliteExecutor<'e>,
+        query: &str,
+    ) -> Result<Vec<LocationOut>, DatabaseError> {
+        let sql = "
+            SELECT
+                id, \
+                name, \
+                description, \
+                created_at \
+            FROM location \
+            WHERE name LIKE ? \
+            ORDER BY id \
+            LIMIT 10;";
+        let res = sqlx::query_as::<_, LocationOut>(sql)
+            .bind(format!("%{}%", query))
+            .fetch_all(executor)
+            .await;
+
+        match res {
+            Ok(value) => Ok(value),
+            Err(Error::RowNotFound) => Ok(vec![]),
+            Err(e) => Err(DatabaseError::Error(e.to_string())),
+        }
+    }
 }

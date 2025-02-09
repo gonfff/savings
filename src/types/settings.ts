@@ -3,6 +3,7 @@ import { JSX } from 'solid-js';
 export enum settingsMenuItems {
   General = 'General',
   Locations = 'Locations',
+  Accounts = 'Accounts',
   Assets = 'Assets',
   Appearance = 'Appearance',
   Creds = 'Creds & Support',

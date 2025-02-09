@@ -21,6 +21,7 @@ export const AccountsMenu = (props: AccountMenuSelection) => {
   const handleLocationClick = (value: number) => {
     if (props.selectedLocation() === value) {
       props.setSelectedLocation(0);
+      props.setSelectedAccount(0);
     } else {
       props.setSelectedLocation(value);
     }

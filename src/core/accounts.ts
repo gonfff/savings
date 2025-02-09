@@ -1,6 +1,9 @@
 import { Account, AccountsFilter, CreateAccount } from '@/types/accounts';
 import { PaginatedResponse } from '@/types/base';
+import { inputValue } from '@/types/inputs';
+import { ToastStyle } from '@/types/toasts';
 import { invoke } from '@tauri-apps/api/core';
+import { addToast } from './toasts';
 
 export const fetchAccounts = async (
   limit: number = 10,
@@ -48,61 +51,71 @@ export const fetchAccountsBy = async (
   return resp;
 };
 
-// ----------------------------
-// export const addAccountButtonAction = (
-//   setReload: (value: boolean) => void,
-// ): ((formData: Record<string, inputValue>) => Promise<void>) => {
-//   return async (formData: Record<string, inputValue>) => {
-//     const AccountRequest: CreateAccount = {
-//       name: formData.name.value.toString(),
-//       description: formData.description.value.toString(),
-//     };
-//     try {
-//       await addAccount(AccountRequest);
-//     } catch (error) {
-//       console.error(error);
-//       addToast({
-//         title: 'Failed',
-//         description: 'Failed to save to the db',
-//         style: ToastStyle.Error,
-//       });
-//       return;
-//     }
-//     setReload(true);
-//     addToast({
-//       title: 'Saved',
-//       style: ToastStyle.Success,
-//     });
-//   };
-// };
+// ----- for settings
 
-// export const editAccountButtonAction = (
-//   id: number,
-//   setReload: (value: boolean) => void,
-// ): ((formData: Record<string, inputValue>) => Promise<void>) => {
-//   return async (formData: Record<string, inputValue>) => {
-//     console.log('Edit account', id, formData);
+export const addAccountButtonAction = (
+  setReload: (value: boolean) => void,
+): ((formData: Record<string, inputValue>) => Promise<void>) => {
+  return async (formData: Record<string, inputValue>) => {
+    const AccountRequest: CreateAccount = {
+      location_id: formData.location_id.id as number,
+      asset_id: formData.asset_id.id as number,
+      description: formData.description.value.toString(),
+    };
+    try {
+      await addAccount(AccountRequest);
+    } catch (error) {
+      console.error(error);
+      addToast({
+        title: 'Failed',
+        description: 'Failed to save to the db',
+        style: ToastStyle.Error,
+      });
+      return;
+    }
+    setReload(true);
+    addToast({
+      title: 'Saved',
+      style: ToastStyle.Success,
+    });
+  };
+};
 
-//     const AccountRequest: AccountRequest = {
-//       name: formData.name.value.toString(),
-//       description: formData.description.value.toString(),
-//     };
+export const editAccountButtonAction = (
+  id: number,
+  setReload: (value: boolean) => void,
+): ((formData: Record<string, inputValue>) => Promise<void>) => {
+  return async (formData: Record<string, inputValue>) => {
+    const AccountRequest: CreateAccount = {
+      location_id: formData.location_id.id as number,
+      asset_id: formData.asset_id.id as number,
+      description: formData.description.value.toString(),
+    };
 
-//     try {
-//       await updateAccount(id, AccountRequest);
-//     } catch (error) {
-//       console.error(error);
-//       addToast({
-//         title: 'Failed',
-//         description: 'Failed to save to the db',
-//         style: ToastStyle.Error,
-//       });
-//       return;
-//     }
-//     setReload(true);
-//     addToast({
-//       title: 'Saved',
-//       style: ToastStyle.Success,
-//     });
-//   };
-// };
+    try {
+      await updateAccount(id, AccountRequest);
+    } catch (error) {
+      console.error(error);
+      addToast({
+        title: 'Failed',
+        description: 'Failed to save to the db',
+        style: ToastStyle.Error,
+      });
+      return;
+    }
+    setReload(true);
+    addToast({
+      title: 'Saved',
+      style: ToastStyle.Success,
+    });
+  };
+};
+
+export const validateAccountInput = (value: inputValue): boolean => {
+  if (value.value === '' && value.id === 0) {
+    return true;
+  } else if (value.value && value.id === 0) {
+    return false;
+  }
+  return true;
+};

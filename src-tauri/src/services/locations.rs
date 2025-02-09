@@ -41,4 +41,8 @@ impl<'a> LocationsService<'a> {
         LocationsRepository::delete(&self.app_state.db.pool, id).await?;
         Ok(())
     }
+    pub async fn search_locations(&self, query: &str) -> Result<Vec<LocationOut>, ServiceError> {
+        let assets = LocationsRepository::search(&self.app_state.db.pool, query).await?;
+        Ok(assets)
+    }
 }

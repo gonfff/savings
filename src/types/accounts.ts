@@ -10,21 +10,19 @@ export interface Account {
   location_id: number;
   location_name: string;
   asset_id: number;
-  name: string;
-  description: string;
   asset_name: string;
   asset_code: string;
+  description: string;
   created_at: Date;
 }
 
 export interface CreateAccount
   extends Omit<
-    Location,
-    'id' | 'asset_name' | 'asset_code' | 'location_name' | 'created_at'
+    Account,
+    'id' | 'location_name' | 'asset_name' | 'asset_code' | 'created_at'
   > {}
 
 export interface AccountsFilter {
   location_id: number | null;
   asset_id: number | null;
-  name: string | null;
 }

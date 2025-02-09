@@ -1,8 +1,27 @@
 import { TableRowButton } from '@/components/buttons';
 import { AccountMenuSelection } from '@/types/accounts';
 import { createSignal } from 'solid-js';
+import { AccountsMenu } from './menu';
 
-export const AccountContent = (props: AccountMenuSelection) => {
+export const AccountsPageContent = () => {
+  const [selectedLocation, setSelectedLocation] = createSignal<number>(0);
+  const [selectedAccount, setSelectedAccount] = createSignal<number>(0);
+  const selection = {
+    selectedLocation,
+    selectedAccount,
+    setSelectedLocation,
+    setSelectedAccount,
+  };
+
+  return (
+    <div class="flex-1 overflow-hidden grid grid-cols-[12rem_1fr]">
+      <AccountsMenu {...selection} />
+      <AccountContent {...selection} />
+    </div>
+  );
+};
+
+const AccountContent = (props: AccountMenuSelection) => {
   const [selectedMenu, setSelectedMenu] = createSignal('All');
   return (
     <div class="flex flex-col items-center">

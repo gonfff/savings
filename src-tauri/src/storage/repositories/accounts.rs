@@ -16,7 +16,6 @@ impl AccountsRepository {
                 a.location_id as location_id, \
                 l.name as location_name, \
                 a.asset_id as asset_id, \
-                a.name as name, \
                 a.description as description, \
                 ass.name as asset_name, \
                 ass.code as asset_code, \
@@ -41,16 +40,15 @@ impl AccountsRepository {
 
     pub async fn add<'e>(
         executor: impl SqliteExecutor<'e>,
-        rate: AccountInsert,
+        account: AccountInsert,
     ) -> Result<(), DatabaseError> {
         let sql = "\
-            INSERT INTO account (location_id, asset_id, name, description) \
-            VALUES (?, ?, ?, ?);";
+            INSERT INTO account (location_id, asset_id, description) \
+            VALUES (?, ?, ?);";
         let res = sqlx::query(sql)
-            .bind(rate.location_id)
-            .bind(rate.asset_id)
-            .bind(rate.name)
-            .bind(rate.description)
+            .bind(account.location_id)
+            .bind(account.asset_id)
+            .bind(account.description)
             .execute(executor)
             .await;
 
@@ -67,13 +65,11 @@ impl AccountsRepository {
         UPDATE account SET \
             location_id = ?, \
             asset_id = ?, \
-            name = ?, \
             description = ? \
         WHERE id = ?;";
         let res = sqlx::query(sql)
             .bind(account.location_id)
             .bind(account.asset_id)
-            .bind(account.name)
             .bind(account.description)
             .bind(id)
             .execute(executor)
@@ -111,7 +107,6 @@ impl AccountsRepository {
                 a.location_id as location_id, \
                 l.name as location_name, \
                 a.asset_id as asset_id, \
-                a.name as name, \
                 a.description as description, \
                 ass.name as asset_name, \
                 ass.code as asset_code, \

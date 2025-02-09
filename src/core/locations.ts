@@ -103,3 +103,16 @@ export const editLocationButtonAction = (
     });
   };
 };
+
+export const fetchDropdownSearchLocations = async (
+  query: string,
+): Promise<inputValue[]> => {
+  const resp = (await invoke('search_locations', {
+    query: query,
+  })) as Location[];
+  return resp.map((item) => ({
+    id: item.id,
+    value: item.name,
+    description: item.description,
+  }));
+};

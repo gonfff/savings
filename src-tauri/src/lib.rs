@@ -14,7 +14,9 @@ use commands::exchange_rates::{
     add_exchange_rate, delete_exchange_rate, get_exchange_rates, update_exchange_rate,
 };
 use commands::kv::{get_base_currency, get_theme, set_base_currency, set_theme};
-use commands::locations::{add_location, delete_location, get_locations, update_location};
+use commands::locations::{
+    add_location, delete_location, get_locations, search_locations, update_location,
+};
 mod helpers;
 mod models;
 mod services;
@@ -69,6 +71,7 @@ pub async fn run() {
             add_location,
             update_location,
             delete_location,
+            search_locations,
             // accounts
             get_accounts,
             add_account,

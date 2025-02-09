@@ -52,3 +52,14 @@ pub async fn delete_location(
         .await
         .map_err(CommandsError::from)
 }
+
+
+#[command]
+pub async fn search_locations(
+    state: tauri::State<'_, AppState>,
+    query: String,
+) -> Result<Vec<LocationOut>, CommandsError> {
+    let svc = LocationsService::new(&state);
+    let locations = svc.search_locations(&query).await?;
+    Ok(locations)
+}

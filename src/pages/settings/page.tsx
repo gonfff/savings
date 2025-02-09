@@ -4,6 +4,7 @@ import { AddLocationButton, LocationsPage } from '@/pages/settings/locations';
 import { settingsMenuItems, SettingsMenuProps } from '@/types/settings';
 
 import { createSignal, For, Match, Switch } from 'solid-js';
+import { AccountsPage, AddAccountButton } from './accounts';
 import { AppearancePage } from './appearance';
 import { AddAssetButton, AssetsPage } from './assets';
 import { GeneralPage } from './general';
@@ -60,6 +61,9 @@ const SettingsContent = (props: SettingsMenuProps) => {
         <Match when={props.selectedMenu() === settingsMenuItems.Locations}>
           <LocationsPage />
         </Match>
+        <Match when={props.selectedMenu() === settingsMenuItems.Accounts}>
+          <AccountsPage />
+        </Match>
         <Match when={props.selectedMenu() === settingsMenuItems.Appearance}>
           <AppearancePage />
         </Match>
@@ -110,6 +114,9 @@ const HeaderButtons = (props: SettingsMenuProps) => {
       </Match>
       <Match when={props.selectedMenu() === settingsMenuItems.Assets}>
         <AddAssetButton />
+      </Match>
+      <Match when={props.selectedMenu() === settingsMenuItems.Accounts}>
+        <AddAccountButton />
       </Match>
     </Switch>
   );

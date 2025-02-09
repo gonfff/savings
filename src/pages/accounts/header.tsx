@@ -8,7 +8,6 @@ export const AccountsPageHeader = () => {
         <div class="space-x-2">
           <AddTransactionButton />
           <AddAccountButton />
-          <AddBurgerButton />
         </div>
       </div>
       <div class="divider mt-1"></div>

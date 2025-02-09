@@ -8,7 +8,6 @@ pub struct AccountOut {
     location_id: u32,
     location_name: String,
     asset_id: u32,
-    name: String,
     description: Option<String>,
     asset_name: String,
     asset_code: String,
@@ -19,14 +18,12 @@ pub struct AccountOut {
 pub struct AccountIn {
     pub location_id: u32,
     pub asset_id: u32,
-    pub name: String,
     pub description: Option<String>,
 }
 
 pub struct AccountInsert {
     pub location_id: u32,
     pub asset_id: u32,
-    pub name: String,
     pub description: Option<String>,
 }
 
@@ -35,7 +32,6 @@ impl From<AccountIn> for AccountInsert {
         AccountInsert {
             location_id: source.location_id,
             asset_id: source.asset_id,
-            name: source.name,
             description: source.description,
         }
     }
@@ -45,7 +41,6 @@ impl From<AccountIn> for AccountInsert {
 pub struct AccountFilters {
     pub location_id: Option<i32>,
     pub asset_id: Option<i32>,
-    pub name: Option<String>,
 }
 
 impl AccountFilters {
@@ -61,10 +56,6 @@ impl AccountFilters {
         if let Some(asset_id) = self.asset_id {
             conditions.push("a.asset_id = ?".to_string());
             bindings.push(asset_id.to_string());
-        }
-        if let Some(ref name) = self.name {
-            conditions.push("a.name LIKE ?".to_string());
-            bindings.push(format!("%{}%", name));
         }
     }
 }
