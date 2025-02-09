@@ -20,7 +20,7 @@ impl AccountsRepository {
                 ass.name as asset_name, \
                 ass.code as asset_code, \
                 a.created_at as created_at \
-            FROM account a \
+            FROM accounts a \
             JOIN asset ass ON a.asset_id = ass.id \
             JOIN location l ON a.location_id = l.id \
             ORDER BY a.id DESC \
@@ -85,7 +85,7 @@ impl AccountsRepository {
         executor: impl SqliteExecutor<'e>,
         id: i32,
     ) -> Result<(), DatabaseError> {
-        let sql = "DELETE FROM account WHERE id = ?;";
+        let sql = "DELETE FROM accounts WHERE id = ?;";
         let res = sqlx::query(sql).bind(id).execute(executor).await;
 
         match res {
@@ -111,7 +111,7 @@ impl AccountsRepository {
                 ass.name as asset_name, \
                 ass.code as asset_code, \
                 a.created_at as created_at \
-            FROM account a \
+            FROM accounts a \
             JOIN asset ass ON a.asset_id = ass.id \
             JOIN location l ON a.location_id = l.id"
             .to_string();

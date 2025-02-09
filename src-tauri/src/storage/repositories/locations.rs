@@ -16,7 +16,7 @@ impl LocationsRepository {
                 name, \
                 description, \
                 created_at \
-            FROM location \
+            FROM locations \
             ORDER BY name \
             LIMIT ? \
             OFFSET ?;";
@@ -76,7 +76,7 @@ impl LocationsRepository {
         executor: impl SqliteExecutor<'e>,
         id: i32,
     ) -> Result<(), DatabaseError> {
-        let sql = "DELETE FROM location WHERE id = ?;";
+        let sql = "DELETE FROM locations WHERE id = ?;";
         let res = sqlx::query(sql).bind(id).execute(executor).await;
 
         match res {
@@ -95,7 +95,7 @@ impl LocationsRepository {
                 name, \
                 description, \
                 created_at \
-            FROM location \
+            FROM locations \
             WHERE name LIKE ? \
             ORDER BY id \
             LIMIT 10;";

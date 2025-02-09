@@ -20,7 +20,7 @@ impl ExchangeRatesRepository {
                 er.rate as rate, \
                 er.source as source,
                 er.to_date as to_date \
-            FROM exchange_rate er \
+            FROM exchange_rates er \
             JOIN asset f ON er.asset_from_id = f.id \
             JOIN asset t ON er.asset_to_id = t.id \
             ORDER BY to_date DESC, id DESC \
@@ -90,7 +90,7 @@ impl ExchangeRatesRepository {
         executor: impl SqliteExecutor<'e>,
         id: i32,
     ) -> Result<(), DatabaseError> {
-        let sql = "DELETE FROM exchange_rate WHERE id = ?;";
+        let sql = "DELETE FROM exchange_rates WHERE id = ?;";
         let res = sqlx::query(sql).bind(id).execute(executor).await;
 
         match res {

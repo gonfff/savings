@@ -18,7 +18,7 @@ impl AssetsRepository {
                 type, \
                 name, \
                 created_at \
-            FROM asset \
+            FROM assets \
             ORDER BY created_at DESC, id DESC \
             LIMIT ? \
             OFFSET ?;";
@@ -82,7 +82,7 @@ impl AssetsRepository {
         executor: impl SqliteExecutor<'e>,
         id: i32,
     ) -> Result<(), DatabaseError> {
-        let sql = "DELETE FROM asset WHERE id = ?;";
+        let sql = "DELETE FROM assets WHERE id = ?;";
         let res = sqlx::query(sql).bind(id).execute(executor).await;
 
         match res {
@@ -102,7 +102,7 @@ impl AssetsRepository {
                 type, \
                 name, \
                 created_at \
-            FROM asset \
+            FROM assets \
             WHERE code LIKE ? OR name LIKE ? \
             ORDER BY id \
             LIMIT 10;";
