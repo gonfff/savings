@@ -21,8 +21,8 @@ impl AccountsRepository {
                 ass.code as asset_code, \
                 a.created_at as created_at \
             FROM accounts a \
-            JOIN asset ass ON a.asset_id = ass.id \
-            JOIN location l ON a.location_id = l.id \
+            JOIN assets ass ON a.asset_id = ass.id \
+            JOIN locations l ON a.location_id = l.id \
             ORDER BY a.id DESC \
             LIMIT ? \
             OFFSET ?;";
@@ -43,7 +43,7 @@ impl AccountsRepository {
         account: AccountInsert,
     ) -> Result<(), DatabaseError> {
         let sql = "\
-            INSERT INTO account (location_id, asset_id, description) \
+            INSERT INTO accounts (location_id, asset_id, description) \
             VALUES (?, ?, ?);";
         let res = sqlx::query(sql)
             .bind(account.location_id)
@@ -62,7 +62,7 @@ impl AccountsRepository {
         account: AccountIn,
     ) -> Result<(), DatabaseError> {
         let sql = "\
-        UPDATE account SET \
+        UPDATE accounts SET \
             location_id = ?, \
             asset_id = ?, \
             description = ? \
@@ -112,8 +112,8 @@ impl AccountsRepository {
                 ass.code as asset_code, \
                 a.created_at as created_at \
             FROM accounts a \
-            JOIN asset ass ON a.asset_id = ass.id \
-            JOIN location l ON a.location_id = l.id"
+            JOIN assets ass ON a.asset_id = ass.id \
+            JOIN locations l ON a.location_id = l.id"
             .to_string();
 
         let mut conditions = vec![];

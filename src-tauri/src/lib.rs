@@ -17,6 +17,9 @@ use commands::kv::{get_base_currency, get_theme, set_base_currency, set_theme};
 use commands::locations::{
     add_location, delete_location, get_locations, search_locations, update_location,
 };
+use commands::transactions::{
+    add_transaction, delete_transaction, get_transactions_by, update_transaction,
+};
 mod helpers;
 mod models;
 mod services;
@@ -78,6 +81,11 @@ pub async fn run() {
             update_account,
             delete_account,
             get_accounts_by,
+            // transactions
+            add_transaction,
+            update_transaction,
+            delete_transaction,
+            get_transactions_by
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -88,5 +96,5 @@ async fn setup_savings_app(app: &mut tauri::App) -> AppState {
     // Ensure the directory exists
     fs::create_dir_all(app_data_dir.clone()).unwrap();
 
-    AppState::new(app_data_dir).await.unwrap()
+    return AppState::new(app_data_dir).await.unwrap();
 }

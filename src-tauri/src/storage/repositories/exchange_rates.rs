@@ -21,8 +21,8 @@ impl ExchangeRatesRepository {
                 er.source as source,
                 er.to_date as to_date \
             FROM exchange_rates er \
-            JOIN asset f ON er.asset_from_id = f.id \
-            JOIN asset t ON er.asset_to_id = t.id \
+            JOIN assets f ON er.asset_from_id = f.id \
+            JOIN assets t ON er.asset_to_id = t.id \
             ORDER BY to_date DESC, id DESC \
             LIMIT ? \
             OFFSET ?;";
@@ -44,7 +44,7 @@ impl ExchangeRatesRepository {
         rate: ExchangeRatesInsert,
     ) -> Result<(), DatabaseError> {
         let sql = "\
-            INSERT INTO exchange_rate (asset_from_id, asset_to_id, rate, to_date, source)\
+            INSERT INTO exchange_rates (asset_from_id, asset_to_id, rate, to_date, source)\
             VALUES (?, ?, ?, ?, ?);";
         let res = sqlx::query(sql)
             .bind(rate.from_id)
@@ -65,7 +65,7 @@ impl ExchangeRatesRepository {
         rate: ExchangeRateIn,
     ) -> Result<(), DatabaseError> {
         let sql = "\
-        UPDATE exchange_rate SET \
+        UPDATE exchange_rates SET \
             asset_from_id = ?, \
             asset_to_id = ?, \
             rate = ?, \

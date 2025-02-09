@@ -40,7 +40,10 @@ export const AccountsMenu = (props: AccountMenuSelection) => {
                   rounded-none`}
                   onClick={() => handleLocationClick(location.id)}
                 >
-                  <p class="w-30 fade-text">{location.name}</p>
+                  <div class="flex flex-col">
+                    <p class="w-30 fade-text">{location.name}</p>
+                    <p class="whitespace-nowrap">{compactNumber(1213.123)}</p>
+                  </div>
                 </a>
                 <ul
                   class={`menu-dropdown ${location.id === props.selectedLocation() ? 'menu-dropdown-show' : ''}`}
@@ -91,19 +94,9 @@ const LocationAccountsSubMenu = (props: AccountMenuSelection) => {
             }`}
             onClick={() => handleAccountClick(account.id)}
           >
-            <div class="grid grid-cols-2 content-between">
-              <div class="w-28 col-span-2 fade-text">{account.name}</div>
-              <div
-                class={`col-span-2 flex ${compactNumber(12312312).length > 7 ? 'flex-col' : 'flex-row'} justify-between`}
-              >
-                <div class="text-left whitespace-nowrap">
-                  {account.asset_code}
-                </div>
-
-                <div class="text-right whitespace-nowrap">
-                  {compactNumber(12312312)}
-                </div>
-              </div>
+            <div class="flex flex-col">
+              <p>{account.asset_code}</p>
+              <p class="whitespace-nowrap">{compactNumber(1213.123)}</p>
             </div>
           </a>
         </li>

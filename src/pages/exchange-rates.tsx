@@ -4,6 +4,7 @@ import {
   ModalProvider,
 } from '@/components/contexts/modal-window';
 import { getReloadContext, ReloadProvider } from '@/components/contexts/reload';
+import { PageHeader } from '@/components/header';
 import { ModalWindow } from '@/components/modal-window';
 import { PaginatedContainer } from '@/components/pagination';
 import { fetchDropdownSearchAssets } from '@/core/assets';
@@ -37,13 +38,9 @@ export default ExchangeRatesPage;
 
 const ExchangeRatesHeader = () => {
   return (
-    <div class="h-24 flex flex-col">
-      <div class="flex flex-row flex-1 items-center">
-        <h1 class="flex-1 text-2xl font-bold text-left">Exchange Rates</h1>
-        <AddRateButton />
-      </div>
-      <div class="divider mt-1"></div>
-    </div>
+    <PageHeader title="Exchange Rates">
+      <AddRateButton />
+    </PageHeader>
   );
 };
 

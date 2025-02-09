@@ -37,7 +37,7 @@ impl LocationsRepository {
         location: LocationInsert,
     ) -> Result<(), DatabaseError> {
         let sql = "\
-            INSERT INTO location (name, description)\
+            INSERT INTO locations (name, description)\
             VALUES (?, ?);";
         let res = sqlx::query(sql)
             .bind(location.name)
@@ -55,7 +55,7 @@ impl LocationsRepository {
         location: LocationIn,
     ) -> Result<(), DatabaseError> {
         let sql = "\
-        UPDATE location SET \
+        UPDATE locations SET \
             name = ?, \
             description = ? \
         WHERE id = ?;";

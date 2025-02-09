@@ -3,6 +3,7 @@ import { AddLocationButton, LocationsPage } from '@/pages/settings/locations';
 
 import { settingsMenuItems, SettingsMenuProps } from '@/types/settings';
 
+import { PageHeader } from '@/components/header';
 import { createSignal, For, Match, Switch } from 'solid-js';
 import { AccountsPage, AddAccountButton } from './accounts';
 import { AppearancePage } from './appearance';
@@ -37,13 +38,9 @@ export default SettingsPage;
 
 const SettingsHeader = (props: SettingsMenuProps) => {
   return (
-    <div class="h-24 flex flex-col">
-      <div class="flex flex-row flex-1 items-center">
-        <h1 class="flex-1 text-2xl font-bold text-left">Settings</h1>
-        <HeaderButtons {...props} />
-      </div>
-      <div class="divider mt-1"></div>
-    </div>
+    <PageHeader title="Settings">
+      <HeaderButtons {...props} />
+    </PageHeader>
   );
 };
 

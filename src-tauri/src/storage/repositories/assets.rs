@@ -40,7 +40,7 @@ impl AssetsRepository {
         asset: AssetInsert,
     ) -> Result<(), DatabaseError> {
         let sql = "\
-            INSERT INTO asset (code, type, name)\
+            INSERT INTO assets (code, type, name)\
             VALUES (?, ?, ?);";
         let res = sqlx::query(sql)
             .bind(asset.code)
@@ -59,7 +59,7 @@ impl AssetsRepository {
         asset: AssetIn,
     ) -> Result<(), DatabaseError> {
         let sql = "\
-        UPDATE asset SET \
+        UPDATE assets SET \
             code = ?, \
             type = ?, \
             name = ? \

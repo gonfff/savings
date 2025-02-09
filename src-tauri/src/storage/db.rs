@@ -1,3 +1,4 @@
+use log::debug;
 use sqlx::{migrate::MigrateDatabase, sqlite::SqlitePoolOptions, Error, Sqlite};
 use std::path::PathBuf;
 

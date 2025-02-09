@@ -3,20 +3,11 @@ import { AccountMenuSelection } from '@/types/accounts';
 import { createSignal } from 'solid-js';
 import { AccountsMenu } from './menu';
 
-export const AccountsPageContent = () => {
-  const [selectedLocation, setSelectedLocation] = createSignal<number>(0);
-  const [selectedAccount, setSelectedAccount] = createSignal<number>(0);
-  const selection = {
-    selectedLocation,
-    selectedAccount,
-    setSelectedLocation,
-    setSelectedAccount,
-  };
-
+export const AccountsPageContent = (props: AccountMenuSelection) => {
   return (
     <div class="flex-1 overflow-hidden grid grid-cols-[12rem_1fr]">
-      <AccountsMenu {...selection} />
-      <AccountContent {...selection} />
+      <AccountsMenu {...props} />
+      <AccountContent {...props} />
     </div>
   );
 };
