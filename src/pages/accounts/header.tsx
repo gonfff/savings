@@ -4,11 +4,17 @@ import { AccountMenuSelection } from '@/types/accounts';
 export const AccountsPageHeader = (props: AccountMenuSelection) => {
   return (
     <PageHeader title="Accounts">
-      <AddTransactionButton />
+      <AddTransactionButton {...props} />
     </PageHeader>
   );
 };
 
-const AddTransactionButton = () => {
-  return <button class="btn btn-primary">Add Transaction</button>;
+const AddTransactionButton = (props: AccountMenuSelection) => {
+  return (
+    <button
+      class={`btn btn-primary ${props.selectedAccount() ? '' : 'btn-disabled'}`}
+    >
+      Add Transaction
+    </button>
+  );
 };
