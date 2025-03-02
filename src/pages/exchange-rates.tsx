@@ -96,7 +96,7 @@ const ExchangeRatesRow = ({ rate }: { rate: ExchangeRate }) => {
 
   return (
     <tr>
-      <td>{rate.to_date.toLocaleDateString()}</td>
+      <td>{rate.to_date.toLocaleString()}</td>
       <td>{rate.from_code}</td>
       <td>{rate.to_code}</td>
       <td>{rate.rate}</td>
@@ -205,12 +205,12 @@ const exchangeRatesFormInputs = (rate?: ExchangeRate): Input[] => {
       type: inputType.StringInput,
       key: 'to_date',
       title: 'Date',
-      dataType: inputDataTypes.Date,
+      dataType: inputDataTypes.DateTime,
       value: {
         id: 0,
         value: rate
-          ? new Date(rate.to_date).toISOString().split('T')[0]
-          : new Date().toISOString().split('T')[0],
+          ? new Date(rate.to_date).toISOString()
+          : new Date().toISOString(),
       },
     },
   ];

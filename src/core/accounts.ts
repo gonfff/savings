@@ -1,4 +1,9 @@
-import { Account, AccountsFilter, CreateAccount } from '@/types/accounts';
+import {
+  Account,
+  AccountBalance,
+  AccountsFilter,
+  CreateAccount,
+} from '@/types/accounts';
 import { PaginatedResponse } from '@/types/base';
 import { inputValue } from '@/types/inputs';
 import { ToastStyle } from '@/types/toasts';
@@ -41,12 +46,12 @@ export const fetchAccountsBy = async (
   filters: AccountsFilter,
   limit: number = 10,
   offset: number = 0,
-): Promise<PaginatedResponse<Account>> => {
+): Promise<PaginatedResponse<AccountBalance>> => {
   const resp = (await invoke('get_accounts_by', {
     filters: filters,
     limit: limit,
     offset: offset,
-  })) as PaginatedResponse<Account>;
+  })) as PaginatedResponse<AccountBalance>;
 
   return resp;
 };
@@ -60,6 +65,7 @@ export const addAccountButtonAction = (
     const AccountRequest: CreateAccount = {
       location_id: formData.location_id.id as number,
       asset_id: formData.asset_id.id as number,
+      name: formData.name.value.toString(),
       description: formData.description.value.toString(),
     };
     try {
@@ -89,6 +95,7 @@ export const editAccountButtonAction = (
     const AccountRequest: CreateAccount = {
       location_id: formData.location_id.id as number,
       asset_id: formData.asset_id.id as number,
+      name: formData.name.value.toString(),
       description: formData.description.value.toString(),
     };
 

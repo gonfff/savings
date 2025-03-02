@@ -2,6 +2,7 @@ import { TableRowButton } from '@/components/buttons';
 import { AccountMenuSelection } from '@/types/accounts';
 import { createSignal } from 'solid-js';
 import { AccountsMenu } from './menu';
+import { DotSymbol } from '@/components/consts';
 
 export const AccountsPageContent = (props: AccountMenuSelection) => {
   return (
@@ -23,11 +24,11 @@ const AccountContent = (props: AccountMenuSelection) => {
       </div>
       <div class="flex flex-row text-sm text-gray-500 whitespace-nowrap mb-3">
         <div>
-          <p>1.2 · 1024$</p>
+          <p>1.2{DotSymbol}1024$</p>
         </div>
         <div class="divider divider-horizontal"></div>
         <div class="text-red-500">
-          <p>-123.12$ · 10.1%</p>
+          <p>-123.12${DotSymbol}10.1%</p>
         </div>
       </div>
       <div class="h-80 w-full flex flex-col justify-between border">

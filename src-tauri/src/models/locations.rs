@@ -3,13 +3,22 @@ use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 
 #[derive(Serialize, FromRow, Debug)]
-pub struct LocationOut {
-    id: u32,
-    name: String,
-    description: Option<String>,
-    created_at: NaiveDateTime,
+pub struct Location {
+    pub id: u32,
+    pub name: String,
+    pub description: Option<String>,
+    pub created_at: NaiveDateTime,
 }
 
+#[derive(Serialize, FromRow, Debug)]
+pub struct LocationOut {
+    pub id: u32,
+    pub name: String,
+    pub description: Option<String>,
+    pub base_asset_name: String,
+    pub total_balance: f64, // total amount of assets in base currency
+    pub created_at: NaiveDateTime,
+}
 
 #[derive(Deserialize, Debug)]
 pub struct LocationIn {

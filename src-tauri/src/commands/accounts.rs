@@ -1,5 +1,5 @@
 use crate::commands::CommandsError;
-use crate::models::accounts::{AccountFilters, AccountIn, AccountOut};
+use crate::models::accounts::{Account, AccountBalance, AccountFilters, AccountIn};
 use crate::models::PaginatedResponse;
 use crate::services::accounts::AccountsService;
 use crate::state::AppState;
@@ -10,7 +10,7 @@ pub async fn get_accounts(
     state: tauri::State<'_, AppState>,
     limit: i32,
     offset: i32,
-) -> Result<PaginatedResponse<AccountOut>, CommandsError> {
+) -> Result<PaginatedResponse<Account>, CommandsError> {
     let svc = AccountsService::new(&state);
     let accounts = svc.get_accounts(limit, offset).await?;
     Ok(PaginatedResponse {
@@ -55,7 +55,7 @@ pub async fn get_accounts_by(
     filters: AccountFilters,
     limit: i32,
     offset: i32,
-) -> Result<PaginatedResponse<AccountOut>, CommandsError> {
+) -> Result<PaginatedResponse<AccountBalance>, CommandsError> {
     let svc = AccountsService::new(&state);
     let accounts = svc.get_accounts_by(filters, limit, offset).await?;
     Ok(PaginatedResponse {

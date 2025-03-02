@@ -1,12 +1,23 @@
+import { DotSymbol } from '@/components/consts';
 import { fetchAccountsBy } from '@/core/accounts';
 import { fetchLocations } from '@/core/locations';
 import { compactNumber } from '@/helpers/compact-number';
-import { AccountMenuSelection, AccountsFilter } from '@/types/accounts';
-import { Location } from '@/types/locations';
-import { createEffect, createResource, createSignal, For } from 'solid-js';
+import {
+  AccountBalance,
+  AccountMenuSelection,
+  AccountsFilter,
+} from '@/types/accounts';
+import { LocationBalance } from '@/types/locations';
+import {
+  createEffect,
+  createResource,
+  createSignal,
+  For,
+  Show,
+} from 'solid-js';
 
 export const AccountsMenu = (props: AccountMenuSelection) => {
-  const [locations, setLocations] = createSignal<Location[]>([]);
+  const [locations, setLocations] = createSignal<LocationBalance[]>([]);
   const limit = 100; // todo: avoid hardcoding and add pagination
 
   const fetchAllLocations = async () => {
@@ -42,7 +53,13 @@ export const AccountsMenu = (props: AccountMenuSelection) => {
                 >
                   <div class="flex flex-col">
                     <p class="w-30 fade-text">{location.name}</p>
-                    <p class="whitespace-nowrap">{compactNumber(1213.123)}</p>
+                    <div class="flex flex-row fade-text text-xs flex justify-between">
+                      <p>
+                        {compactNumber(location.total_balance || 0)}
+                        {DotSymbol}
+                        {location.base_asset_name}
+                      </p>
+                    </div>
                   </div>
                 </a>
                 <ul
@@ -94,13 +111,39 @@ const LocationAccountsSubMenu = (props: AccountMenuSelection) => {
             }`}
             onClick={() => handleAccountClick(account.id)}
           >
-            <div class="flex flex-col">
-              <p>{account.asset_code}</p>
-              <p class="whitespace-nowrap">{compactNumber(1213.123)}</p>
-            </div>
+            <Show
+              when={account.name}
+              fallback={<AccountMenuRow {...account} />}
+            >
+              <AccountMenuRowWithName {...account} />
+            </Show>
           </a>
         </li>
       )}
     </For>
+  );
+};
+
+const AccountMenuRowWithName = (account: AccountBalance) => {
+  return (
+    <div class="flex flex-col w-24">
+      <div class="fade-text">{account.name}</div>
+      <div class="flex flex-row fade-text text-xs flex justify-between">
+        {compactNumber(account.balance)}
+        {DotSymbol}
+        {account.asset_code}
+      </div>
+    </div>
+  );
+};
+
+const AccountMenuRow = (account: AccountBalance) => {
+  return (
+    <div class="flex flex-col w-24">
+      <div class="fade-text">{account.asset_code}</div>
+      <div class="flex flex-row fade-text text-xs flex justify-between">
+        {compactNumber(account.balance)}
+      </div>
+    </div>
   );
 };

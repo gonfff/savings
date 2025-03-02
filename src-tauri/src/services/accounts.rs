@@ -1,4 +1,4 @@
-use crate::models::accounts::{AccountFilters, AccountIn, AccountInsert, AccountOut};
+use crate::models::accounts::{Account, AccountBalance, AccountFilters, AccountIn, AccountInsert};
 use crate::services::ServiceError;
 use crate::state::AppState;
 use crate::storage::repositories::accounts::AccountsRepository;
@@ -16,7 +16,7 @@ impl<'a> AccountsService<'a> {
         &self,
         limit: i32,
         offset: i32,
-    ) -> Result<Vec<AccountOut>, ServiceError> {
+    ) -> Result<Vec<Account>, ServiceError> {
         let accounts = AccountsRepository::get_all(&self.app_state.db.pool, limit, offset).await?;
         Ok(accounts)
     }
@@ -42,7 +42,7 @@ impl<'a> AccountsService<'a> {
         filters: AccountFilters,
         limit: i32,
         offset: i32,
-    ) -> Result<Vec<AccountOut>, ServiceError> {
+    ) -> Result<Vec<AccountBalance>, ServiceError> {
         let accounts =
             AccountsRepository::get_by(&self.app_state.db.pool, filters, limit, offset).await?;
         Ok(accounts)

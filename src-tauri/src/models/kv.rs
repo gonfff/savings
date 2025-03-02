@@ -14,13 +14,13 @@ impl SettingKey {
             SettingKey::BaseCurrency => "base_currency",
             SettingKey::UseExternalApi => "use_external_api",
             SettingKey::Theme => "theme",
-            SettingKey::Environment => "environment"
+            SettingKey::Environment => "environment",
         }
     }
 }
 
 #[derive(Serialize, Deserialize, FromRow, Debug)]
 pub struct BaseCurrency {
-    id: u32,
-    value: String,
+    pub id: u32,
+    pub value: String,
 }

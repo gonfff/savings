@@ -1,4 +1,4 @@
-use crate::models::locations::{LocationIn, LocationInsert, LocationOut};
+use crate::models::locations::{Location, LocationIn, LocationInsert, LocationOut};
 use crate::services::ServiceError;
 use crate::state::AppState;
 use crate::storage::repositories::locations::LocationsRepository;
@@ -12,14 +12,15 @@ impl<'a> LocationsService<'a> {
         LocationsService { app_state }
     }
 
-    pub async fn get_locations(
+    pub async fn get_locations_with_balance(
         &self,
         limit: i32,
         offset: i32,
     ) -> Result<Vec<LocationOut>, ServiceError> {
-        let exchange_rates =
-            LocationsRepository::get_all(&self.app_state.db.pool, limit, offset).await?;
-        Ok(exchange_rates)
+        let locations =
+            LocationsRepository::get_all_with_balance(&self.app_state.db.pool, limit, offset)
+                .await?;
+        Ok(locations)
     }
 
     pub async fn add_location(&self, location: LocationIn) -> Result<(), ServiceError> {
@@ -28,11 +29,7 @@ impl<'a> LocationsService<'a> {
         Ok(())
     }
 
-    pub async fn update_location(
-        &self,
-        id: i32,
-        location: LocationIn,
-    ) -> Result<(), ServiceError> {
+    pub async fn update_location(&self, id: i32, location: LocationIn) -> Result<(), ServiceError> {
         LocationsRepository::update(&self.app_state.db.pool, id, location).await?;
         Ok(())
     }
@@ -41,7 +38,8 @@ impl<'a> LocationsService<'a> {
         LocationsRepository::delete(&self.app_state.db.pool, id).await?;
         Ok(())
     }
-    pub async fn search_locations(&self, query: &str) -> Result<Vec<LocationOut>, ServiceError> {
+
+    pub async fn search_locations(&self, query: &str) -> Result<Vec<Location>, ServiceError> {
         let assets = LocationsRepository::search(&self.app_state.db.pool, query).await?;
         Ok(assets)
     }

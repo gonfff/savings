@@ -8,6 +8,7 @@ export enum inputDataTypes {
   String = 'string',
   Number = 'number',
   Date = 'date',
+  DateTime = 'datetime',
 }
 
 export interface inputValue {

@@ -195,6 +195,15 @@ const accountsFormInputs = (account?: Account): Input[] => {
     },
     {
       type: inputType.StringInput,
+      key: 'name',
+      title: 'Name',
+      placeholder: 'Spot (Optional)',
+      required: false,
+      dataType: inputDataTypes.String,
+      value: account ? { id: 0, value: account.name } : { id: 0, value: '' },
+    },
+    {
+      type: inputType.StringInput,
       key: 'description',
       title: 'Description',
       placeholder: 'For new iPhone',

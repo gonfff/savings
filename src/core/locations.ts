@@ -1,19 +1,19 @@
 import { addToast } from '@/core/toasts';
 import { PaginatedResponse } from '@/types/base';
 import { inputValue } from '@/types/inputs';
-import { Location, LocationRequest } from '@/types/locations';
+import { Location, LocationBalance, LocationRequest } from '@/types/locations';
 import { ToastStyle } from '@/types/toasts';
 import { invoke } from '@tauri-apps/api/core';
 
 export const fetchLocations = async (
   limit: number = 10,
   offset: number = 0,
-): Promise<PaginatedResponse<Location>> => {
+): Promise<PaginatedResponse<LocationBalance>> => {
   const resp = (await invoke('get_locations', {
     limit: limit,
     offset: offset,
-  })) as PaginatedResponse<Location>;
-
+  })) as PaginatedResponse<LocationBalance>;
+  console.log('Fetched locations', resp);
   return resp;
 };
 

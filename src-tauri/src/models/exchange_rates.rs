@@ -1,5 +1,5 @@
-use crate::helpers::default_date_deserializer;
-use chrono::NaiveDate;
+use crate::helpers::{default_date_deserializer, default_datetime_deserializer};
+use chrono::{NaiveDate, NaiveDateTime};
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 
@@ -12,24 +12,23 @@ pub struct ExchangeRateOut {
     to_code: String,
     rate: f64,
     source: String,
-    to_date: NaiveDate,
+    to_date: NaiveDateTime,
 }
-
 
 #[derive(Deserialize, Debug)]
 pub struct ExchangeRateIn {
     pub from_id: u32,
     pub to_id: u32,
     pub rate: f64,
-    #[serde(deserialize_with = "default_date_deserializer")]
-    pub to_date: NaiveDate,
+    #[serde(deserialize_with = "default_datetime_deserializer")]
+    pub to_date: NaiveDateTime,
 }
 
 pub struct ExchangeRatesInsert {
     pub from_id: u32,
     pub to_id: u32,
     pub rate: f64,
-    pub to_date: NaiveDate,
+    pub to_date: NaiveDateTime,
     pub source: String,
 }
 

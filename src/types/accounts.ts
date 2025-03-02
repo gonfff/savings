@@ -7,6 +7,7 @@ export interface AccountMenuSelection {
 
 export interface Account {
   id: number;
+  name: string;
   location_id: number;
   location_name: string;
   asset_id: number;
@@ -25,4 +26,8 @@ export interface CreateAccount
 export interface AccountsFilter {
   location_id: number | null;
   asset_id: number | null;
+}
+
+export interface AccountBalance extends Account {
+  balance: number;
 }
