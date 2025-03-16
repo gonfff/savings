@@ -35,6 +35,7 @@ export const AccountsMenu = (props: AccountMenuSelection) => {
       props.setSelectedAccount(0);
     } else {
       props.setSelectedLocation(value);
+      props.setSelectedAccount(0);
     }
   };
 

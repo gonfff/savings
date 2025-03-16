@@ -1,20 +1,35 @@
 import { TableRowButton } from '@/components/buttons';
-import { AccountMenuSelection } from '@/types/accounts';
-import { createSignal } from 'solid-js';
-import { AccountsMenu } from './menu';
 import { DotSymbol } from '@/components/consts';
+import { AccountPageData } from '@/types/account-page';
+import { AccountMenuSelection } from '@/types/accounts';
+import { createResource, createSignal } from 'solid-js';
+import { createStore } from 'solid-js/store';
 
-export const AccountsPageContent = (props: AccountMenuSelection) => {
-  return (
-    <div class="flex-1 overflow-hidden grid grid-cols-[12rem_1fr]">
-      <AccountsMenu {...props} />
-      <AccountContent {...props} />
-    </div>
+export const AccountContent = (props: AccountMenuSelection) => {
+  const [selectedChartPeriod, setChartPeriod] = createSignal('All');
+  const [pageData, setPageData] = createStore<AccountPageData>({
+    description: '',
+    quantity: 0,
+    rate: 0,
+    growth: 0,
+    growth_percentage: 0,
+    items: [],
+    next: false,
+  });
+
+  const fetchData = async ([location_id, account_id]: [number, number]) => {
+    if (!location_id) return null;
+    if (account_id) {
+      return fetch(`/api/account/${account_id}`).then((res) => res.json());
+    }
+    return fetch(`/api/location/${location}`).then((res) => res.json());
+  };
+
+  const [data] = createResource(
+    () => [props.selectedLocation(), props.selectedAccount()],
+    ([location, account]) => fetchData([location, account]),
   );
-};
 
-const AccountContent = (props: AccountMenuSelection) => {
-  const [selectedMenu, setSelectedMenu] = createSignal('All');
   return (
     <div class="flex flex-col items-center">
       <div class="flex flex-row w-full text-left mb-3">
@@ -40,7 +55,7 @@ const AccountContent = (props: AccountMenuSelection) => {
           <li>
             <a
               class={`rounded-none menu-item ${
-                selectedMenu() === '1w' ? 'active' : ''
+                selectedChartPeriod() === '1w' ? 'active' : ''
               }`}
               onClick={() => {}}
             >
@@ -50,7 +65,7 @@ const AccountContent = (props: AccountMenuSelection) => {
           <li>
             <a
               class={`rounded-none menu-item  ${
-                selectedMenu() === '1m' ? 'active' : ''
+                selectedChartPeriod() === '1m' ? 'active' : ''
               }`}
               onClick={() => {}}
             >
@@ -60,7 +75,7 @@ const AccountContent = (props: AccountMenuSelection) => {
           <li>
             <a
               class={`rounded-none menu-item ${
-                selectedMenu() === '1y' ? 'active' : ''
+                selectedChartPeriod() === '1y' ? 'active' : ''
               }`}
               onClick={() => {}}
             >
@@ -70,7 +85,7 @@ const AccountContent = (props: AccountMenuSelection) => {
           <li>
             <a
               class={`rounded-none menu-item ${
-                selectedMenu() === 'All' ? 'active' : ''
+                selectedChartPeriod() === 'All' ? 'active' : ''
               }`}
               onClick={() => {}}
             >

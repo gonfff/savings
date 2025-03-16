@@ -1,14 +1,34 @@
 export const compactNumber = (value: number): string => {
-  if (value >= 1_000_000_000) return (value / 1_000_000_000).toFixed(1) + 'B';
-  if (value >= 1_000_000) return (value / 1_000_000).toFixed(1) + 'M';
-  if (value >= 1_000) return (value / 1_000).toFixed(1) + 'K';
+  const absValue = Math.abs(value);
+  let suffix = '';
+  let compacted = absValue;
 
-  if (value > 0 && value < 1) {
-    if (value <= 1e-9) return (value * 1e12).toFixed(1) + 'p';
-    if (value <= 1e-6) return (value * 1e9).toFixed(1) + 'n';
-    if (value <= 1e-3) return (value * 1e6).toFixed(1) + 'µ';
-    return (value * 1e3).toFixed(1) + 'm';
+  if (absValue >= 1_000_000_000) {
+    compacted = absValue / 1_000_000_000;
+    suffix = 'B';
+  } else if (absValue >= 1_000_000) {
+    compacted = absValue / 1_000_000;
+    suffix = 'M';
+  } else if (absValue >= 1_000) {
+    compacted = absValue / 1_000;
+    suffix = 'K';
+  } else if (absValue > 0 && absValue < 1) {
+    if (absValue <= 1e-9) {
+      compacted = absValue * 1e12;
+      suffix = 'p';
+    } else if (absValue <= 1e-6) {
+      compacted = absValue * 1e9;
+      suffix = 'n';
+    } else if (absValue <= 1e-3) {
+      compacted = absValue * 1e6;
+      suffix = 'µ';
+    } else {
+      compacted = absValue * 1e3;
+      suffix = 'm';
+    }
+  } else {
+    return value.toString();
   }
 
-  return value.toString(); // Для значений между 1 и 1000
+  return (value < 0 ? '-' : '') + compacted.toFixed(1) + suffix;
 };

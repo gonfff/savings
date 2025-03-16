@@ -1,7 +1,7 @@
 import { menuRoute } from '@/types/sidebar';
 import { createSignal } from 'solid-js';
 
-const [selectedMenu, setSelectedMenu] = createSignal('Dashboard');
+const [selectedMenu, setSelectedMenu] = createSignal('Accounts');
 
 const handleMenuClick = (menu: string) => {
   setSelectedMenu(menu);
