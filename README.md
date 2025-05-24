@@ -2,7 +2,7 @@
 
 A personal desktop application to track savings accounts.
 
-⚠️ Note: Development is currently paused. I plan to return and finish it when possible.
+⚠️ Note: Not ready for use. Development is currently paused. I plan to return and finish it when possible.
 ✨ Features (Planned)
 
 Manage multiple savings accounts
