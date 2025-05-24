@@ -1,7 +1,7 @@
 import { TableRowButton } from '@/components/buttons';
 import { DotSymbol } from '@/components/consts';
-import { AccountPageData } from '@/types/account-page';
 import { AccountMenuSelection } from '@/types/accounts';
+import { AccountPageData } from '@/types/charts';
 import { createResource, createSignal } from 'solid-js';
 import { createStore } from 'solid-js/store';
 
@@ -17,24 +17,20 @@ export const AccountContent = (props: AccountMenuSelection) => {
     next: false,
   });
 
-  const fetchData = async ([location_id, account_id]: [number, number]) => {
-    if (!location_id) return null;
-    if (account_id) {
-      return fetch(`/api/account/${account_id}`).then((res) => res.json());
-    }
-    return fetch(`/api/location/${location}`).then((res) => res.json());
-  };
-
   const [data] = createResource(
-    () => [props.selectedLocation(), props.selectedAccount()],
-    ([location, account]) => fetchData([location, account]),
+    () => [
+      props.selectedLocation(),
+      props.selectedAccount(),
+      selectedChartPeriod(),
+    ],
+    // ([location, account]) => fetchData([location, account]),
   );
 
   return (
     <div class="flex flex-col items-center">
       <div class="flex flex-row w-full text-left mb-3">
         <p class="opacity-50 text-sm">
-          Это мой очередной сберегательный счет раздва три хуйхуйхуй
+          My another savings account
         </p>
       </div>
       <div class="flex flex-row text-sm text-gray-500 whitespace-nowrap mb-3">
